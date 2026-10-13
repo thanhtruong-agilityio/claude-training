@@ -4,8 +4,6 @@
 
 - **Task:** Summarize a trip-planner-api bug: `Agent config not found for a registered agent after the cache was loaded`
 
----
-
 | Ver | Prompt | What was wrong / good |
 |---|---|---|
 | v1 | Summarize this bug:<br><br>Agent config not found for a registered agent after the cache was loaded. | Summary matched the given line. Gave 3 generic likely causes. Wrongly guessed the message came from the Claude Code / agent harness (`.claude/agents/`), not the service. Ended by asking where I saw it, what I was doing, and for a stack trace |

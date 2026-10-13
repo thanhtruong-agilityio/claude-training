@@ -4,7 +4,7 @@
 - **Trainee:** thanh.truong
 - **Branch:** `training/day-01`
 
-**Status:** AI Fluency + AI capabilities and limitations done (lessons + quizzes). Claude 101 lessons 1–12 done; lesson 13 + quiz pending.
+**Status:** AI Fluency, AI capabilities and limitations, and Claude 101 done (lessons + quizzes).
 
 **4Ds:** https://claude.ai/artifact/YanKZK7FtZwivZzKSQWeqR
 
@@ -52,19 +52,19 @@
 
 ### 2.3 Claude 101
 
-- [x] What is Claude? 
-- [x] Your first conversation with Claude 
-- [x] Getting better results getting-better-results
-- [x] How you'll work with Claude on your desktop 
-- [x] Introduction to projects introduction-to-projects
-- [x] Creating with artifacts creating-with-artifacts
-- [x] Working with skills working-with-skills
-- [x] Connecting your tools connecting-your-tools
-- [x] Enterprise search enterprise-search
-- [x] Research for deep dives 
-- [x] Claude in action: use-cases by role 
+- [x] What is Claude?
+- [x] Your first conversation with Claude
+- [x] Getting better results
+- [x] How you'll work with Claude on your desktop
+- [x] Introduction to projects
+- [x] Creating with artifacts
+- [x] Working with skills
+- [x] Connecting your tools
+- [x] Enterprise search
+- [x] Research for deep dives
+- [x] Claude in action: use-cases by role
 - [x] Other ways to work with Claude
-- [x] course quiz + badge: https://academy.claude.com/verify/5bf1aec64de285c15a3de1fbfa8388c5
+- [x] Course quiz + badge: https://academy.claude.com/verify/5bf1aec64de285c15a3de1fbfa8388c5
 
 ---
 
@@ -141,8 +141,9 @@ Iterate with diagnosis, not retries. Secret weapon: ask AI to improve the prompt
 | Agrees instantly when I push back | Ask it to re-check on the merits |
 | Confident wrong math | Offload to code |
 
-
 ---
+
+**Claude 101 — Claude basics**
 
 **1. What it is and where it runs**
 
@@ -169,8 +170,7 @@ Iterate with diagnosis, not retries. Secret weapon: ask AI to improve the prompt
 | Confident but wrong | Plausible errors on specifics | Verify, ask sources/confidence, enable web search |
 | Wrong tone | Tone undescribed | Describe it or paste a sample |
 
-
-**3. Persistent context: Projects vs Skills vs Connectors **
+**3. Persistent context: Projects vs Skills vs Connectors**
 
 | | Holds | Applies | Example |
 |---|---|---|---|
