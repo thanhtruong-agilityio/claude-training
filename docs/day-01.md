@@ -4,7 +4,11 @@
 - **Trainee:** thanh.truong
 - **Branch:** `training/day-01`
 
-**Status:** AI Fluency + AI capabilities and limitations done (lessons + quizzes). Claude 101 still pending.
+**Status:** AI Fluency + AI capabilities and limitations done (lessons + quizzes). Claude 101 lessons 1–12 done; lesson 13 + quiz pending.
+
+**4Ds:** https://claude.ai/artifact/YanKZK7FtZwivZzKSQWeqR
+
+**Claude 101:** https://claude.ai/code/artifact/60f1d227-730f-4aaa-a729-061d61cf1e70
 
 ---
 
@@ -48,7 +52,19 @@
 
 ### 2.3 Claude 101
 
-- [ ] Lessons 1–4 — *pending*
+- [x] What is Claude? 
+- [x] Your first conversation with Claude 
+- [x] Getting better results getting-better-results
+- [x] How you'll work with Claude on your desktop 
+- [x] Introduction to projects introduction-to-projects
+- [x] Creating with artifacts creating-with-artifacts
+- [x] Working with skills working-with-skills
+- [x] Connecting your tools connecting-your-tools
+- [x] Enterprise search enterprise-search
+- [x] Research for deep dives 
+- [x] Claude in action: use-cases by role 
+- [x] Other ways to work with Claude
+- [x] course quiz + badge: https://academy.claude.com/verify/5bf1aec64de285c15a3de1fbfa8388c5
 
 ---
 
@@ -125,3 +141,40 @@ Iterate with diagnosis, not retries. Secret weapon: ask AI to improve the prompt
 | Agrees instantly when I push back | Ask it to re-check on the merits |
 | Confident wrong math | Offload to code |
 
+
+---
+
+**1. What it is and where it runs**
+
+| Concept | Meaning | Why it matters |
+|---|---|---|
+| Constitutional AI | Principle-based alignment; avoids harmful output, keeps behavior transparent | Safety ≠ correctness; still verify |
+| Steerable | Tone, role, behavior set by prompt | = "define role/tone" technique |
+| Thinking | Step-by-step reasoning before answering | Multi-step problems; adds latency |
+| Context window | 200K+ tokens (~500 pages), up to 1M on paid plans/supported models | Still lost-in-the-middle risk |
+| Surfaces | claude.ai · Code · Slack (Tag) · Design · M365 · Chrome · Cowork | Match tool to where the work lives |
+
+**2. Prompting + iterating**
+- Prompt = **stage** (role, goal, background) + **task** (action) + **rules** (style, tone, examples) = Description in 4D
+- Uploads (PDF, DOCX, CSV, TXT, PNG, JPEG) are a context shortcut
+- Model: **Sonnet** default · Opus for hardest multi-step · extended thinking only when needed · changing model = new chat
+- Persistent: Settings > Account > Instructions for Claude · Settings > Memory (on by default Free/Pro/Max, off by default Team/Enterprise until Owner allows)
+- Pencil icon = edit + resubmit a message
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| Too generic | Missing context | Add audience, role, constraints |
+| Too long/short | Claude guesses length | State length |
+| Wrong format | Content understood, layout not | Show example / describe structure |
+| Confident but wrong | Plausible errors on specifics | Verify, ask sources/confidence, enable web search |
+| Wrong tone | Tone undescribed | Describe it or paste a sample |
+
+
+**3. Persistent context: Projects vs Skills vs Connectors **
+
+| | Holds | Applies | Example |
+|---|---|---|---|
+| **Project** | Knowledge (files) + instructions + own chats | Every chat in the project | Brand guidelines hub |
+| **Skill** | A process (steps, order, method) | When invoked (Claude auto-selects) | Excel/Word/PPT/PDF creation, QBR workflow |
+| **Connector (MCP)** | Live access to external tools | Per request, scoped to my permissions | Drive, Slack, Jira, Asana |
+| **Enterprise search** | Pre-built project over org tools | "Ask {Org}" in sidebar | Policy, onboarding, status |
