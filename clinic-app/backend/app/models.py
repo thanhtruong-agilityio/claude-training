@@ -1,8 +1,10 @@
-from datetime import date, datetime
+from datetime import date
 from typing import Literal
 
 from pydantic import NaiveDatetime, field_validator, model_validator
 from sqlmodel import Field, SQLModel
+
+from app import clock
 
 Sex = Literal["male", "female", "other"]
 
@@ -27,7 +29,7 @@ class PatientBase(SQLModel):
     @field_validator("birth_year")
     @classmethod
     def _birth_year_not_in_future(cls, value):
-        if value is not None and value > date.today().year:
+        if value is not None and value > clock.today().year:
             raise ValueError("birth_year cannot be in the future")
         return value
 
@@ -35,7 +37,7 @@ class PatientBase(SQLModel):
 class Patient(PatientBase, table=True):
     id: int | None = Field(default=None, primary_key=True)
     is_archived: bool = False
-    created_at: NaiveDatetime = Field(default_factory=datetime.now)
+    created_at: NaiveDatetime = Field(default_factory=clock.now)
 
 
 class PatientCreate(PatientBase):
@@ -66,7 +68,7 @@ class PatientUpdate(SQLModel):
     @field_validator("birth_year")
     @classmethod
     def _birth_year_not_in_future(cls, value):
-        if value is not None and value > date.today().year:
+        if value is not None and value > clock.today().year:
             raise ValueError("birth_year cannot be in the future")
         return value
 
@@ -108,7 +110,7 @@ class PrescriptionItemRead(PrescriptionItemBase):
 
 
 class VisitBase(SQLModel):
-    visited_at: NaiveDatetime = Field(default_factory=datetime.now)
+    visited_at: NaiveDatetime = Field(default_factory=clock.now)
     symptoms: str | None = None
     diagnosis: str | None = None
     notes: str | None = None
