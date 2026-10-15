@@ -1,4 +1,4 @@
-import type { Patient } from "./types";
+import type { Patient, PatientDetail, Visit, VisitPayload } from "./types";
 
 const BASE = "/api";
 
@@ -20,3 +20,17 @@ export const listPatients = (q?: string) =>
 
 export const createPatient = (data: NewPatient) =>
   request<Patient>(`${BASE}/patients`, { method: "POST", body: JSON.stringify(data) });
+
+export const getPatient = (id: number) => request<PatientDetail>(`${BASE}/patients/${id}`);
+
+export const createVisit = (patientId: number, data: VisitPayload) =>
+  request<Visit>(`${BASE}/patients/${patientId}/visits`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+
+export const updateVisit = (id: number, data: VisitPayload) =>
+  request<Visit>(`${BASE}/visits/${id}`, { method: "PUT", body: JSON.stringify(data) });
+
+export const deleteVisit = (id: number) =>
+  request<unknown>(`${BASE}/visits/${id}`, { method: "DELETE" });
