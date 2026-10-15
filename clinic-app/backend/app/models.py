@@ -148,3 +148,17 @@ class VisitRead(VisitBase):
 
 
 PatientDetail.model_rebuild()
+
+
+class FollowUpRead(SQLModel):
+    visit_id: int
+    patient_id: int
+    full_name: str
+    phone: str | None
+    follow_up_date: date
+
+
+class RevenueRead(SQLModel):
+    visit_count: int
+    collected: int
+    owed: int

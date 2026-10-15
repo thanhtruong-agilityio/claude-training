@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import init_db
-from app.routers import patients, visits
+from app.routers import patients, reports, visits
 
 
 @asynccontextmanager
@@ -21,4 +21,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 app.include_router(patients.router)
+# reports must come before visits: /visits/follow-ups would otherwise match /visits/{visit_id}
+app.include_router(reports.router)
 app.include_router(visits.router)
