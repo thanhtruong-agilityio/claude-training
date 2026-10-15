@@ -7,6 +7,10 @@ Local web app for a doctor running a small private clinic at home: patients, vis
 - `make up`, then open http://localhost:5173 (API on http://localhost:8000).
 - `make test` runs backend (pytest) and frontend (vitest) tests in containers.
 
+## Timezone
+
+The clinic runs on `Asia/Ho_Chi_Minh`. The backend computes "now" and "today" in that zone (`backend/app/clock.py`), and `docker-compose.yml` sets `TZ=Asia/Ho_Chi_Minh` on the backend container. Check with `docker compose exec backend date`. Visits saved before this change keep their stored date.
+
 ## Backup
 
 All records live in one SQLite file: `backend/clinic.db`.
