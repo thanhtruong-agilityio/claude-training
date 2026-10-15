@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent } from "react";
 import { createPatient, listPatients } from "../api";
+import FollowUps from "../components/FollowUps";
 import type { Patient } from "../types";
 
 interface Props {
@@ -34,6 +35,8 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
     <main>
       <h1>Patients</h1>
       <button onClick={onRevenue}>Revenue</button>
+
+      <FollowUps onOpen={onOpen} />
 
       <label>
         Search

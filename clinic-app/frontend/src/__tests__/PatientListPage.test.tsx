@@ -14,6 +14,7 @@ const patients = [
 
 beforeEach(() => {
   vi.mocked(api.listPatients).mockResolvedValue(patients);
+  vi.mocked(api.listFollowUps).mockResolvedValue([]);
   vi.mocked(api.createPatient).mockReset();
 });
 
