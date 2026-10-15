@@ -3,6 +3,7 @@ from datetime import date, datetime, time, timedelta
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, col, select
 
+from app import clock
 from app.db import get_session
 from app.models import FollowUpRead, Patient, RevenueRead, Visit
 
@@ -14,7 +15,7 @@ def follow_ups(
     on: date | None = Query(default=None, alias="date"),
     session: Session = Depends(get_session),
 ):
-    day = on or date.today()
+    day = on or clock.today()
     rows = session.exec(
         select(Visit, Patient)
         .join(Patient, Patient.id == Visit.patient_id)

@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { getRevenue } from "../api";
 import type { Revenue } from "../types";
 
-const today = () => new Date().toLocaleDateString("sv-SE"); // YYYY-MM-DD, local time
+// YYYY-MM-DD in clinic time, same as the backend, whatever the browser's timezone
+const today = () => new Date().toLocaleDateString("sv-SE", { timeZone: "Asia/Ho_Chi_Minh" });
 
 export default function RevenuePage({ onBack }: { onBack: () => void }) {
   const [from, setFrom] = useState(today());

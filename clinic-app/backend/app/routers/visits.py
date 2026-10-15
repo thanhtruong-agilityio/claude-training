@@ -1,8 +1,7 @@
-from datetime import datetime
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 
+from app import clock
 from app.db import get_session
 from app.models import Patient, PrescriptionItem, Visit, VisitRead, VisitWrite
 from app.queries import load_visit_read
@@ -72,7 +71,7 @@ def update_visit(
 @router.delete("/visits/{visit_id}")
 def delete_visit(visit_id: int, session: Session = Depends(get_session)):
     visit = _get_visit(session, visit_id)
-    visit.deleted_at = datetime.now()
+    visit.deleted_at = clock.now()
     session.add(visit)
     session.commit()
     return {"ok": True}
