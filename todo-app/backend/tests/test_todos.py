@@ -29,3 +29,24 @@ def test_delete_removes_todo(client):
 
 def test_delete_missing_returns_404(client):
     assert client.delete("/todos/999").status_code == 404
+
+
+def test_create_rejects_whitespace_only_title(client):
+    assert client.post("/todos", json={"title": "   "}).status_code == 422
+
+
+def test_update_rejects_whitespace_only_title(client):
+    todo_id = client.post("/todos", json={"title": "a"}).json()["id"]
+    res = client.patch(f"/todos/{todo_id}", json={"title": "   "})
+    assert res.status_code == 422
+
+
+def test_create_trims_title(client):
+    res = client.post("/todos", json={"title": " a "})
+    assert res.json()["title"] == "a"
+
+
+def test_update_trims_title(client):
+    todo_id = client.post("/todos", json={"title": "a"}).json()["id"]
+    res = client.patch(f"/todos/{todo_id}", json={"title": " b "})
+    assert res.json()["title"] == "b"
