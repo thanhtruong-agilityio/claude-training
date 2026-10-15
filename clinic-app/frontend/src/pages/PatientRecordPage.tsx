@@ -1,0 +1,79 @@
+import { useCallback, useEffect, useState } from "react";
+import { createVisit, deleteVisit, getPatient, updateVisit } from "../api";
+import VisitForm from "../components/VisitForm";
+import type { PatientDetail, Visit, VisitPayload } from "../types";
+
+interface Props {
+  id: number;
+  onBack: () => void;
+}
+
+type Mode = { name: "view" } | { name: "new" } | { name: "edit"; visit: Visit };
+
+export default function PatientRecordPage({ id, onBack }: Props) {
+  const [patient, setPatient] = useState<PatientDetail | null>(null);
+  const [mode, setMode] = useState<Mode>({ name: "view" });
+
+  const load = useCallback(() => {
+    getPatient(id).then(setPatient);
+  }, [id]);
+
+  useEffect(load, [load]);
+
+  const save = async (data: VisitPayload) => {
+    if (mode.name === "edit") await updateVisit(mode.visit.id, data);
+    else await createVisit(id, data);
+    setMode({ name: "view" });
+    load();
+  };
+
+  const remove = async (visitId: number) => {
+    await deleteVisit(visitId);
+    load();
+  };
+
+  if (!patient) return <p>Loading…</p>;
+
+  return (
+    <main>
+      <button onClick={onBack}>Back</button>
+      <h1>{patient.full_name}</h1>
+      <p>
+        {patient.birth_year ?? "?"} · {patient.sex ?? "?"} · {patient.phone ?? ""} · {patient.address ?? ""}
+      </p>
+      {(patient.allergies || patient.medical_history) && (
+        <section style={{ background: "#fde8e8", padding: "0.5rem" }}>
+          {patient.allergies && <p><strong>Allergies:</strong> {patient.allergies}</p>}
+          {patient.medical_history && <p><strong>History:</strong> {patient.medical_history}</p>}
+        </section>
+      )}
+
+      {mode.name === "view" ? (
+        <button onClick={() => setMode({ name: "new" })}>New visit</button>
+      ) : (
+        <VisitForm
+          initial={mode.name === "edit" ? mode.visit : undefined}
+          onSubmit={save}
+          onCancel={() => setMode({ name: "view" })}
+        />
+      )}
+
+      <h2>Visits</h2>
+      {patient.visits.length === 0 && <p>No visits yet.</p>}
+      {patient.visits.map((v) => (
+        <article key={v.id}>
+          <h3>{v.visited_at.slice(0, 10)}</h3>
+          <p>{v.symptoms} {v.diagnosis && `→ ${v.diagnosis}`}</p>
+          <ul>
+            {v.items.map((i) => (
+              <li key={i.id}>{i.drug_name} — {i.dosage ?? ""} × {i.days} days</li>
+            ))}
+          </ul>
+          <p>Fee {v.fee} · Paid {v.paid_amount}{v.paid_amount < v.fee ? ` · Owed ${v.fee - v.paid_amount}` : ""}</p>
+          <button onClick={() => setMode({ name: "edit", visit: v })}>Edit</button>
+          <button onClick={() => remove(v.id)}>Delete</button>
+        </article>
+      ))}
+    </main>
+  );
+}
