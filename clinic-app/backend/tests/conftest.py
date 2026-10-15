@@ -28,3 +28,15 @@ def client():
 @pytest.fixture
 def patient(client):
     return client.post("/patients", json={"full_name": "Test Patient"}).json()
+
+
+@pytest.fixture
+def make_visit(client):
+    def _make(patient_id, **overrides):
+        body = {"symptoms": "cough", "fee": 100000, "paid_amount": 100000}
+        body.update(overrides)
+        res = client.post(f"/patients/{patient_id}/visits", json=body)
+        assert res.status_code == 201, res.text
+        return res.json()
+
+    return _make
