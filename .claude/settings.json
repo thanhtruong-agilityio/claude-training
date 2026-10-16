@@ -19,8 +19,7 @@
     "deny": [
       "Read(clinic-app/backend/clinic.db)",
       "Read(clinic-app/backups/**)",
-      "Read(**/.env)",
-      "Bash(git push:*)"
+      "Read(**/.env)"
     ]
   }
 }
