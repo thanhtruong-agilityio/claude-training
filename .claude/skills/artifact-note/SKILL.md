@@ -19,7 +19,10 @@ Turn the trainee's short notes into one structured study guide, published as an 
    - `Course`: stated in the course material
    - `Mine`: from the user's notes, not found in the course material
    - `Added`: something you (Claude) add to make the guide complete; keep these few and plainly labeled
+   - `Conflict`: the user's note contradicts the course material; show both versions side by side and let the user decide
    - `Unchecked`: no course material was available to verify
+
+   Tag by who wrote the content, not by its topic: anything you wrote yourself (quiz questions, checklists, templates) is `Added`, even when it is based on a course point. Use `Course` only for content quoted or closely paraphrased from the course material.
 3. Build the guide with these sections, skipping one only when the notes give it nothing to hold:
    - **Steps**: the process in order, one line each
    - **Checklists**: things to verify before or after the task
@@ -28,12 +31,12 @@ Turn the trainee's short notes into one structured study guide, published as an 
    - **Quiz**: 5-8 questions from the notes; answer hidden until the user reveals it
    - **Apply the 4Ds**: one short action per D for daily work
 4. Every item carries its origin tag, shown as a small visible badge.
-5. Load the `artifact-design` skill, write one self-contained `.html` file (scratchpad directory if the system prompt lists one), then publish it with the Artifact tool. Use a distinctive title (the topic, not "Study guide") and a one-sentence description. The page needs no runtime capability.
-6. Reply with the link and a count of items per origin tag. List the `Added` and `Unchecked` items so the user can review them first.
+5. Load the `artifact-design` skill, write one self-contained `.html` file (scratchpad directory if the system prompt lists one), then publish it with the Artifact tool. Use a distinctive title (the topic, not "Study guide") and a one-sentence description. On the first publish pass `icon` (for example `guide`); omit it on republish. The page needs no runtime capability.
+6. Reply with the link and a count of items per origin tag. List the `Conflict`, `Added` and `Unchecked` items so the user can review them first.
 
 ## Rules
 
 - Short and scannable beats complete. Tables, checklists and one-liners, not prose.
-- Never present an `Added` or `Unchecked` item as if it came from the course.
+- Never present an `Added`, `Conflict` or `Unchecked` item as if it came from the course.
 - No secrets or customer data in the notes or the page; ask the user to remove them first.
 - The Artifact is private by default. Don't share it unless the user asks.
