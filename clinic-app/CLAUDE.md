@@ -27,6 +27,6 @@ Local web app for a doctor's home clinic: patients, visits, prescriptions, fees,
 - Never log request bodies that contain patient data.
 - Never publish ports beyond 127.0.0.1 (there is no login).
 
-## Skills (`../.claude/skills/`)
+## Skills (`.claude/skills/`)
 
 `clinic-run-tests` · `clinic-data-safety` · `clinic-add-endpoint`
