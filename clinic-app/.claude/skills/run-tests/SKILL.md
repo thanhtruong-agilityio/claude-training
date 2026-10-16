@@ -1,5 +1,5 @@
 ---
-name: clinic-run-tests
+name: run-tests
 description: Use when you need to run or verify the clinic-app tests, or before claiming a clinic-app change works
 ---
 

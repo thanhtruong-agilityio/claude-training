@@ -1,5 +1,5 @@
 ---
-name: clinic-data-safety
+name: data-safety
 description: Use before committing, adding logging, writing test data, or pasting anything into an AI tool for clinic-app, since it holds patient data
 ---
 
