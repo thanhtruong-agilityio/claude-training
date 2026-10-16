@@ -38,18 +38,18 @@ export default function PatientRecordPage({ id, onBack }: Props) {
     <main>
       <button onClick={onBack}>Back</button>
       <h1>{patient.full_name}</h1>
-      <p>
+      <p className="meta">
         {patient.birth_year ?? "?"} · {patient.sex ?? "?"} · {patient.phone ?? ""} · {patient.address ?? ""}
       </p>
       {(patient.allergies || patient.medical_history) && (
-        <section style={{ background: "#fde8e8", padding: "0.5rem" }}>
+        <section className="alert-allergy">
           {patient.allergies && <p><strong>Allergies:</strong> {patient.allergies}</p>}
           {patient.medical_history && <p><strong>History:</strong> {patient.medical_history}</p>}
         </section>
       )}
 
       {mode.name === "view" ? (
-        <button onClick={() => setMode({ name: "new" })}>New visit</button>
+        <div className="actions"><button className="btn-primary" onClick={() => setMode({ name: "new" })}>New visit</button></div>
       ) : (
         <VisitForm
           initial={mode.name === "edit" ? mode.visit : undefined}
@@ -69,9 +69,11 @@ export default function PatientRecordPage({ id, onBack }: Props) {
               <li key={i.id}>{i.drug_name} — {i.dosage ?? ""} × {i.days} days</li>
             ))}
           </ul>
-          <p>Fee {v.fee} · Paid {v.paid_amount}{v.paid_amount < v.fee ? ` · Owed ${v.fee - v.paid_amount}` : ""}</p>
-          <button onClick={() => setMode({ name: "edit", visit: v })}>Edit</button>
-          <button onClick={() => remove(v.id)}>Delete</button>
+          <p className="meta">Fee {v.fee} · Paid {v.paid_amount}{v.paid_amount < v.fee ? ` · Owed ${v.fee - v.paid_amount}` : ""}</p>
+          <div className="actions">
+            <button onClick={() => setMode({ name: "edit", visit: v })}>Edit</button>
+            <button className="btn-danger" onClick={() => remove(v.id)}>Delete</button>
+          </div>
         </article>
       ))}
     </main>

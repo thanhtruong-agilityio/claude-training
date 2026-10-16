@@ -11,18 +11,28 @@ export type View =
 export default function App() {
   const [view, setView] = useState<View>({ name: "patients" });
 
-  if (view.name === "patient") {
-    return <PatientRecordPage id={view.id} onBack={() => setView({ name: "patients" })} />;
-  }
+  const goHome = () => setView({ name: "patients" });
 
-  if (view.name === "revenue") {
-    return <RevenuePage onBack={() => setView({ name: "patients" })} />;
+  let page;
+  if (view.name === "patient") {
+    page = <PatientRecordPage id={view.id} onBack={goHome} />;
+  } else if (view.name === "revenue") {
+    page = <RevenuePage onBack={goHome} />;
+  } else {
+    page = (
+      <PatientListPage
+        onOpen={(id) => setView({ name: "patient", id })}
+        onRevenue={() => setView({ name: "revenue" })}
+      />
+    );
   }
 
   return (
-    <PatientListPage
-      onOpen={(id) => setView({ name: "patient", id })}
-      onRevenue={() => setView({ name: "revenue" })}
-    />
+    <>
+      <nav className="nav">
+        <span className="brand">Clinic</span>
+      </nav>
+      {page}
+    </>
   );
 }

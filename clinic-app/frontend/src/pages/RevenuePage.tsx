@@ -23,10 +23,10 @@ export default function RevenuePage({ onBack }: { onBack: () => void }) {
       <label>To <input type="date" value={to} onChange={(e) => setTo(e.target.value)} /></label>
       {from > to && <p role="alert">From must not be after To</p>}
       {revenue && (
-        <ul>
+        <ul className="stats">
           <li>Visits: {revenue.visit_count}</li>
-          <li>Collected: {revenue.collected}</li>
-          <li>Owed: {revenue.owed}</li>
+          <li className="collected">Collected: {revenue.collected}</li>
+          <li className="owed">Owed: {revenue.owed}</li>
         </ul>
       )}
     </main>
