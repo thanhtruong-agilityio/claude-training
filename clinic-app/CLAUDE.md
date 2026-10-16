@@ -29,4 +29,8 @@ Local web app for a doctor's home clinic: patients, visits, prescriptions, fees,
 
 ## Skills (`.claude/skills/`)
 
-`clinic-run-tests` · `clinic-data-safety` · `clinic-add-endpoint`
+`run-tests` · `data-safety` · `add-endpoint`
+
+## Review agents (`.claude/agents/`, read-only)
+
+`backend-reviewer` · `frontend-reviewer` · `data-safety-reviewer`
