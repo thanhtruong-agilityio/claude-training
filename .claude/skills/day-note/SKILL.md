@@ -1,5 +1,5 @@
 ---
-name: new-day-note
+name: day-note
 description: Use when starting a new training day in this repo - creates the day branch and a docs/day-NN.md note in the established structure
 ---
 
