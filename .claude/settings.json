@@ -4,5 +4,23 @@
   },
   "enabledPlugins": { "cl-core@cl": true, "cl-dev@cl": true, "cl-ba-qa@cl": true },
   "model": "claude-sonnet-5-5",
-  "advisorModel": "opus"
+  "advisorModel": "opus",
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(make test:*)",
+      "Bash(make test-backend)",
+      "Bash(make test-frontend)",
+      "Bash(docker compose ps)",
+      "Bash(docker compose logs:*)"
+    ],
+    "deny": [
+      "Read(clinic-app/backend/clinic.db)",
+      "Read(clinic-app/backups/**)",
+      "Read(**/.env)",
+      "Bash(git push:*)"
+    ]
+  }
 }
