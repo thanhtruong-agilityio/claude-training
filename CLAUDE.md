@@ -31,6 +31,10 @@ This is a personal training log for a Claude/AI-fluency course, not a software p
 
 - Ask before every push, merge, branch deletion and deploy.
 
+## Rules
+
+Detailed rules live in `.claude/rules/`: `notes-style` · `git-workflow` · `security`.
+
 ## Advisor
 
 An advisor model (Opus) is configured for this repository. Consult it:
