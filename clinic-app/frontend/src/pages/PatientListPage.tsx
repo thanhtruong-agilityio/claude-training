@@ -34,7 +34,7 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
   return (
     <main>
       <h1>Patients</h1>
-      <button onClick={onRevenue}>Revenue</button>
+      <div className="actions"><button onClick={onRevenue}>Revenue</button></div>
 
       <FollowUps onOpen={onOpen} />
 
@@ -58,7 +58,7 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
       {patients.length === 0 ? (
         <p>No patients yet.</p>
       ) : (
-        <table>
+        <div className="table-wrap"><table>
           <thead>
             <tr>
               <th>Name</th>
@@ -81,7 +81,7 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
       )}
     </main>
   );

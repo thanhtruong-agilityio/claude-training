@@ -86,7 +86,7 @@ export default function VisitForm({ initial, onSubmit, onCancel }: Props) {
 
       <h3>Prescription</h3>
       {rows.map((row, i) => (
-        <div key={i}>
+        <div key={i} className="row">
           <label>Drug name <input value={row.drug_name} onChange={(e) => setRow(i, { drug_name: e.target.value })} /></label>
           <label>Dosage <input value={row.dosage} onChange={(e) => setRow(i, { dosage: e.target.value })} /></label>
           <label>Days <input value={row.days} onChange={(e) => setRow(i, { days: e.target.value })} /></label>
