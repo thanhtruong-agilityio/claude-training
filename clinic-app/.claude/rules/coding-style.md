@@ -3,11 +3,11 @@
 Follow the style already in the file you touch.
 
 ## Backend (`backend/app/`)
-- Type-hint every function. Routes declare `response_model` and a `status_code` when not 200.
-- Look-up helpers (`_get_patient`, `_get_visit`) raise `HTTPException` (404 missing, 409 archived); don't repeat that inline.
+- Type-hint function parameters; add return types on new helpers. Routes declare `response_model` (and `status_code` when not 200) where they return a body.
+- Missing records raise `HTTPException(404, ...)`; archived patients raise 409 on writes. Reuse the helpers in the router you're editing (`_get_visit`, `_get_patient` in `routers/visits.py`) instead of repeating the check.
 - Time comes from `clock.py` (`now()`, `today()`), never `datetime.now()` or `date.today()`.
 - Deletes are soft (`deleted_at`); filter deleted rows in queries.
-- Keep SQL/queries in `queries.py`, routing in `routers/`, schemas in `models.py`.
+- Schemas in `models.py`, routing in `routers/`. `queries.py` holds shared read helpers (e.g. `load_visit_read`); most simple queries live in the router.
 
 ## Frontend (`frontend/src/`)
 - TypeScript is `strict`: no `any`, no `@ts-ignore` to silence an error.

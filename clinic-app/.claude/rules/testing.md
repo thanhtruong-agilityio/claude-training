@@ -1,7 +1,7 @@
 ---
 paths:
-  - "backend/tests/**"
-  - "frontend/src/__tests__/**"
+  - "**/backend/tests/**"
+  - "**/frontend/src/__tests__/**"
 ---
 
 # Testing
