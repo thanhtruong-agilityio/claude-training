@@ -37,11 +37,11 @@ Also: any ISSUE to record? Keep the default NEXT PLAN or change it?
 ### Title (level-1 bullet)
 
 - Topic or task name, at most ~10 words.
-- Start with a base-form verb for actions (Implement, Fix, Refactor, Add, Review, Update, Migrate); use a noun for course or module names (`Claude Code 101`, `Day 05: Memory, context, sessions`).
+- Start with a base-form verb for actions (Implement, Fix, Refactor, Add, Review, Update, Migrate); use a noun for course or module names (`Claude Code 101`, `Day 05: Memory, context, sessions`). A finished course lesson may read `Completed <name>`.
 - Name the object and the purpose. Good: `Implement conversation memory/checkpointer for multi-turn queue resumption`. Bad: `Work on memory`.
 - Keep a ticket id first: `[PROJ-123] Fix ...`.
 - For a PR or ticket link, use its original title, shortened if long, same meaning.
-- No trailing period. Capitalize the first letter only, except proper names and terms.
+- No trailing period. Capitalize the first letter only, except proper names, terms, and the word right after a colon (`Exercise: Bug ticket through the full loop`).
 
 ### Subtitle (level-2 bullet)
 
@@ -138,7 +138,7 @@ Slack rules:
 - DONE: merged or closed.
 - IN-REVIEW: PR sent, waiting for review. Add the PR link if there is one: `* <task> ([PR #123](url))`.
 - IN-PROGRESS: unfinished work.
-- Every bullet starts with a base-form verb.
+- Action bullets start with a base-form verb; course or module names follow the general title rule. The `None` bullet is exempt.
 - NEXT PLAN default: `Continue the in-progress tasks.` (with a trailing period, the only exception to the no-period rule).
 
 Example:
