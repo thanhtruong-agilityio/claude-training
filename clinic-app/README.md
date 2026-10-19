@@ -32,6 +32,18 @@ All records live in one SQLite file: `backend/clinic.db`.
 - `*.db` is gitignored. Never commit the database, and never use real patient data in tests or in any AI tool.
 - Request bodies containing patient data must not be logged.
 
+## Logs
+
+Read them with `make logs` (`docker compose logs -f`).
+
+| Log | Contains | Patient data |
+|---|---|---|
+| backend (uvicorn access) | client, method, path, status, e.g. `POST /patients/search 200` | none: search terms go in a POST body, never the URL; request bodies are not logged |
+| backend (uvicorn startup/reload) | server start, reload and shutdown messages | none |
+| frontend (Vite dev server) | startup lines only; proxied `/api` requests are not logged | none |
+
+Search is `POST /patients/search` with a JSON body. `GET /patients` is the plain list and ignores a `q` query parameter, so never put a name or phone number in a URL: the access log would record it. `/reports/revenue` and `/visits/follow-ups` only carry dates.
+
 ## Notes
 
 - Revenue is booked on the visit date. Recording a later payment edits the visit's `paid_amount`, so earlier days' totals change.
