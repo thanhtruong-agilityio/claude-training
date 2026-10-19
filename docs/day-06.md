@@ -5,7 +5,7 @@
 - **Branch:** `training/day-06`
 - **Track:** Developer
 
-**Status:** Plan written, nothing run yet. Exercises use clinic-app tickets 08 and 10.
+**Status:** All exercises and Developer Checkpoint 2 done. Tickets 08 and 10 merged (#23, #24); loop.md in PR #25.
 
 **Plan:** `docs/plans/2026-10-19-day-06-practice.md`
 
@@ -15,29 +15,29 @@
 
 - [x] Plan: Pro (Remote Control needs a subscription login, not an API key)
 - [x] Setup PR merged (#22)
-- [ ] Repo has at least one commit for worktrees
-- [ ] Claude phone app / claude.ai/code reachable from phone
+- [x] Repo has at least one commit for worktrees
+- [x] Claude phone app / claude.ai/code reachable from phone
 
 ---
 
 ## 2. Exercises
 
-- [ ] Two parallel worktree sessions (tickets 08, 10), watched in agent view
-- [ ] Plan-mode change on ticket 08 steered with diff comments
-- [ ] `/loop` on the ticket 10 PR, plus `loop.md` for the repo
-- [ ] Remote Control: one steer from the phone
-- [ ] One artifact (PR walkthrough)
-- [ ] `ultrathink` vs `/effort` levels on the same problem
-- [ ] One cloud session on a long task
-- [ ] Both PRs merged
+- [x] Two parallel worktree sessions (tickets 08, 10), watched in agent view
+- [x] Plan-mode change on ticket 08 steered with diff comments
+- [x] `/loop` on PR #25 (loop.md), run and cancelled
+- [x] Remote Control: one steer from the phone
+- [x] One artifact (PR walkthrough)
+- [x] `ultrathink` vs `/effort` levels on the same problem
+- [x] One cloud session on a long task
+- [x] Both PRs merged
 
 ### Developer Checkpoint 2
 
-- [ ] Two parallel sessions, both merged
-- [ ] One plan-mode change steered through diff comments
-- [ ] One artifact
-- [ ] One Remote Control steer
-- [ ] One `/loop` run
+- [x] Two parallel sessions, both merged
+- [x] One plan-mode change steered through diff comments
+- [x] One artifact
+- [x] One Remote Control steer
+- [x] One `/loop` run
 
 ---
 
