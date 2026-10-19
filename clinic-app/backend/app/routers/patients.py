@@ -11,6 +11,7 @@ from app.models import (
     PatientDetail,
     PatientListItem,
     PatientRead,
+    PatientSearch,
     PatientUpdate,
     Visit,
 )
@@ -24,12 +25,7 @@ def _norm(text: str) -> str:
     return unicodedata.normalize("NFC", text).casefold()
 
 
-@router.get("", response_model=list[PatientListItem])
-def list_patients(
-    q: str | None = None,
-    include_archived: bool = False,
-    session: Session = Depends(get_session),
-):
+def _list(session: Session, q: str | None, include_archived: bool) -> list[PatientListItem]:
     patients = session.exec(select(Patient).order_by(Patient.full_name)).all()
     if not include_archived:
         patients = [p for p in patients if not p.is_archived]
@@ -51,6 +47,17 @@ def list_patients(
         PatientListItem(**p.model_dump(), last_visit_date=last.get(p.id))
         for p in patients
     ]
+
+
+@router.get("", response_model=list[PatientListItem])
+def list_patients(include_archived: bool = False, session: Session = Depends(get_session)):
+    return _list(session, None, include_archived)
+
+
+# POST with a JSON body so the search term never appears in the URL (access logs).
+@router.post("/search", response_model=list[PatientListItem])
+def search_patients(data: PatientSearch, session: Session = Depends(get_session)):
+    return _list(session, data.q, data.include_archived)
 
 
 @router.post("", response_model=PatientRead, status_code=201)

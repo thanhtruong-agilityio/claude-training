@@ -28,15 +28,29 @@ def test_create_rejects_bad_sex_and_birth_year(client):
 def test_search_by_name_ignores_case_and_keeps_diacritics(client):
     client.post("/patients", json={"full_name": "Nguyễn Văn A"})
     client.post("/patients", json={"full_name": "Trần Thị B"})
-    names = [p["full_name"] for p in client.get("/patients", params={"q": "nguyễn"}).json()]
+    names = [p["full_name"] for p in client.post("/patients/search", json={"q": "nguyễn"}).json()]
     assert names == ["Nguyễn Văn A"]
 
 
 def test_search_by_phone(client):
     client.post("/patients", json={"full_name": "A", "phone": "0900000001"})
     client.post("/patients", json={"full_name": "B", "phone": "0911111111"})
-    names = [p["full_name"] for p in client.get("/patients", params={"q": "0911"}).json()]
+    names = [p["full_name"] for p in client.post("/patients/search", json={"q": "0911"}).json()]
     assert names == ["B"]
+
+
+def test_search_respects_include_archived(client, patient):
+    client.patch(f"/patients/{patient['id']}", json={"is_archived": True})
+    assert client.post("/patients/search", json={"q": "test"}).json() == []
+    shown = client.post("/patients/search", json={"q": "test", "include_archived": True}).json()
+    assert [p["id"] for p in shown] == [patient["id"]]
+
+
+def test_get_list_ignores_q(client):
+    client.post("/patients", json={"full_name": "A"})
+    client.post("/patients", json={"full_name": "B"})
+    names = [p["full_name"] for p in client.get("/patients", params={"q": "A"}).json()]
+    assert names == ["A", "B"]
 
 
 def test_archived_hidden_unless_requested(client, patient):
