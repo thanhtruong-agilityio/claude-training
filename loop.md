@@ -12,7 +12,7 @@ Copy a block, fill the placeholders, paste it into a Claude Code session.
 | | |
 |---|---|
 | Interval | `15m` |
-| Stop when | PR is merged or closed, **or** all checks pass and no unresolved review comment is left |
+| Stop when | PR is merged or closed, **or** all checks pass and no unresolved review comment is left, **or** after 3 runs |
 | Usage | replace `<PR>` with the PR number |
 
 ```text
@@ -28,8 +28,8 @@ Copy a block, fill the placeholders, paste it into a Claude Code session.
 
 ### Rules
 - Read-only: do not fix code, re-run jobs, reply to or resolve comments.
-- Stop the loop when the PR is merged or closed, or when all checks pass and no review thread has `isResolved: false`. Say why it stopped, then cancel this loop's scheduled job (CronList → CronDelete).
-- If nothing changed since the last tick, answer "no change" only.
+- Stop the loop when the PR is merged or closed, or when all checks pass and no review thread has `isResolved: false`, or after the 3rd run (count runs, starting at 1; print "Run n/3" at the top of each output). Say why it stopped, then cancel this loop's scheduled job (CronList → CronDelete).
+- If nothing changed since the last tick, answer "Run n/3 · no change" only.
 
 ### Output Format
 - State: <open|merged|closed> · <reviewDecision>
