@@ -4,7 +4,7 @@ Copy a block, fill the placeholders, paste it into a Claude Code session.
 
 > **Notes (both prompts)**
 > - A `/loop` lives only in the current session: when the session ends (closed, cleared, app quit), the loop stops. Paste the prompt again to restart it.
-> - Every tick is a full model turn, so it spends quota even when nothing changed. Use the longest interval that is still useful, and stop the loop as soon as its stop condition is met.
+> - Every tick is a full model turn, so it uses up Pro plan quota even when nothing changed. Use the longest interval that is still useful, and stop the loop as soon as its stop condition is met.
 > - Read-only: the loop reports, it never pushes, merges, re-runs jobs or replies to comments (CLAUDE.md: ask first).
 
 ## 1. PR: CI + review comments
@@ -42,7 +42,8 @@ Copy a block, fill the placeholders, paste it into a Claude Code session.
 | | |
 |---|---|
 | Interval | `5m` |
-| Stop when | the latest run on `main` has finished (success or failure), **or** the repo has no workflow |
+| Stop when | the latest run on `main` has finished (success or failure), **or** the repo has no workflow, **or** after 3 runs |
+| Quota | every run uses up Pro plan quota, even when nothing changed |
 | Usage | paste as is |
 
 ```text
@@ -54,9 +55,9 @@ Copy a block, fill the placeholders, paste it into a Claude Code session.
 
 ### Rules
 - Read-only: do not re-run jobs, push or open issues.
-- Stop the loop when the latest run on main has finished (report success, or the failure with job and log link), or when no workflow run exists (report once). Then cancel this loop's scheduled job (CronList → CronDelete).
-- If the run is still in progress and nothing changed, answer "still running" only.
+- Stop the loop when the latest run on main has finished (report success, or the failure with job and log link), or when no workflow run exists (report once), or after the 3rd run (count runs, starting at 1; print "Run n/3" at the start of each output). Then cancel this loop's scheduled job (CronList → CronDelete).
+- If the run is still in progress and nothing changed, answer "Run n/3 · still running" only.
 
 ### Output Format
-<short sha> · <workflow> · <status/conclusion> · <url>
+Run n/3 · <short sha> · <workflow> · <status/conclusion> · <url>
 ```
