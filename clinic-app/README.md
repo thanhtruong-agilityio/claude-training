@@ -15,8 +15,16 @@ The clinic runs on `Asia/Ho_Chi_Minh`. The backend computes "now" and "today" in
 
 All records live in one SQLite file: `backend/clinic.db`.
 
-- `make backup` copies it to `backups/clinic-<timestamp>.db`. Run it regularly and copy the result to a second disk.
+- `make backup` takes a consistent snapshot (SQLite online backup, safe while the app is running) into `backups/clinic-<timestamp>.db`, then runs `PRAGMA integrity_check` on it. It fails with a message if `backend/clinic.db` is missing or the check is not `ok`, and removes the bad file. Needs `sqlite3` on the host. Run it regularly and copy the result to a second disk.
 - Keep this folder out of synced folders (iCloud, Dropbox) and turn on disk encryption (FileVault).
+
+### Restore
+
+1. `make down` (the app must not be writing).
+2. Check the backup: `sqlite3 backups/clinic-<timestamp>.db "PRAGMA integrity_check;"` must print `ok`.
+3. Keep the current file just in case: `mv backend/clinic.db backend/clinic.db.old` (delete it once you are happy).
+4. `cp backups/clinic-<timestamp>.db backend/clinic.db`
+5. `make up` and check the data in the app.
 
 ## Data safety
 
