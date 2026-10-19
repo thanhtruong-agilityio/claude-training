@@ -15,8 +15,11 @@ export type NewPatient = Partial<Omit<Patient, "id" | "is_archived" | "created_a
   full_name: string;
 };
 
+// The search term goes in a POST body, never the URL, so it stays out of access logs.
 export const listPatients = (q?: string) =>
-  request<Patient[]>(`${BASE}/patients${q ? `?q=${encodeURIComponent(q)}` : ""}`);
+  q
+    ? request<Patient[]>(`${BASE}/patients/search`, { method: "POST", body: JSON.stringify({ q }) })
+    : request<Patient[]>(`${BASE}/patients`);
 
 export const createPatient = (data: NewPatient) =>
   request<Patient>(`${BASE}/patients`, { method: "POST", body: JSON.stringify(data) });

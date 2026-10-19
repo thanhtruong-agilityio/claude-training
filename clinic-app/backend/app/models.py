@@ -87,6 +87,11 @@ class PatientListItem(PatientRead):
     last_visit_date: date | None = None
 
 
+class PatientSearch(SQLModel):
+    q: str = ""
+    include_archived: bool = False
+
+
 class PrescriptionItemBase(SQLModel):
     drug_name: str = Field(min_length=1, max_length=200)
     dosage: str | None = Field(default=None, max_length=200)
