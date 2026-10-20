@@ -6,7 +6,7 @@ Local web app for a doctor's home clinic: patients, visits, prescriptions, fees,
 
 - `make up` — BE http://localhost:8000, FE http://localhost:5173
 - `make test` — backend (pytest) + frontend (vitest); `make test-backend` / `make test-frontend` for one side
-- `make backup` — copy `backend/clinic.db` to `backups/`
+- `make backup` — verified snapshot of `backend/clinic.db` into `backups/`
 - Don't run `pytest` or `npm test` directly on the host.
 
 ## Layout
