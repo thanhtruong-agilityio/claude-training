@@ -1,4 +1,5 @@
 import anthropic
+import openai
 from prompt_toolkit import PromptSession
 from prompt_toolkit.completion import Completer, Completion
 
@@ -45,5 +46,5 @@ async def run_cli(chat: Chat) -> None:
             print(await chat.run(query))
         except ChatInputError as error:
             print(error)
-        except anthropic.APIError as error:
-            print(f"Claude API error: {error}")
+        except (anthropic.APIError, openai.APIError) as error:
+            print(f"LLM API error: {error}")
