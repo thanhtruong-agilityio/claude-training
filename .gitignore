@@ -13,5 +13,8 @@ dist/
 .DS_Store
 .idea/
 
+# Secrets
+.env
+
 # Database backups
 backups/
