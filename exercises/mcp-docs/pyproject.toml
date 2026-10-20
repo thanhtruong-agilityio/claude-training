@@ -1,0 +1,20 @@
+[project]
+name = "mcp-docs"
+version = "0.1.0"
+description = "Course example: document MCP server, client and CLI chat"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]<2",
+    "anthropic",
+    "openai",
+    "prompt-toolkit",
+    "python-dotenv",
+]
+
+[dependency-groups]
+dev = ["pytest", "pytest-asyncio"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["."]
+testpaths = ["tests"]
