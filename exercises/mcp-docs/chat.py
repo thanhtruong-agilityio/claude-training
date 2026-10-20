@@ -14,10 +14,6 @@ def _result_text(result) -> str:
     return "".join(c.text for c in result.content if c.type == "text")
 
 
-def _reply_text(reply) -> str:
-    return "".join(b.text for b in reply.content if b.type == "text")
-
-
 class Chat:
     def __init__(self, claude, client: MCPClient):
         self.claude = claude
@@ -49,24 +45,23 @@ class Chat:
 
         while True:
             reply = await self.claude.chat(self.messages, tools)
-            self.messages.append({"role": "assistant", "content": reply.content})
-            if reply.stop_reason != "tool_use":
-                return _reply_text(reply)
+            self.messages.append(
+                {"role": "assistant", "text": reply.text, "tool_calls": reply.tool_calls}
+            )
+            if not reply.tool_calls:
+                return reply.text
 
             results = []
-            for block in reply.content:
-                if block.type != "tool_use":
-                    continue
-                result = await self.client.call_tool(block.name, block.input)
+            for call in reply.tool_calls:
+                result = await self.client.call_tool(call.name, call.input)
                 results.append(
                     {
-                        "type": "tool_result",
-                        "tool_use_id": block.id,
+                        "id": call.id,
                         "content": _result_text(result),
                         "is_error": bool(result.isError),
                     }
                 )
-            self.messages.append({"role": "user", "content": results})
+            self.messages.append({"role": "tool_results", "results": results})
 
     async def _mention_message(self, query: str) -> dict:
         mentioned = list(dict.fromkeys(MENTION.findall(query)))
