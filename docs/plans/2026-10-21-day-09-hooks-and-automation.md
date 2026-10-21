@@ -4,7 +4,7 @@
 
 **Goal:** Ship format-on-edit and notify-on-finish hooks as PRs, climb the automation ladder, and evaluate `@claude review` on the first hook PR.
 
-**Architecture:** Hooks live in the shared `.claude/settings.json` and call small scripts under `.claude/hooks/`. Hooks run on the host (not in docker), so formatters are called through `uv run --project` and the local `node_modules/.bin`. The `@claude` GitHub Action goes in first so the hook PR can be reviewed by it.
+**Architecture:** Hooks live in `.claude/settings.json` (notify, repo-wide) and `clinic-app/.claude/settings.json` (format, clinic-app only) and call small scripts under the matching `hooks/` folder. Hooks run on the host (not in docker), so formatters are called through `uv run --project` and the local `node_modules/.bin`. The `@claude` GitHub Action goes in first so the hook PR can be reviewed by it.
 
 **Tech Stack:** Claude Code hooks (PostToolUse, Stop), bash + jq, ruff, prettier, GitHub Actions (`anthropics/claude-code-action`), `gh` CLI.
 
@@ -39,7 +39,7 @@
 | `docs/tickets/12-format-on-edit-hook.md` | Ticket for PR 1 |
 | `docs/tickets/13-notify-on-finish-hook.md` | Ticket for PR 2 |
 | `.github/workflows/claude.yml` | `@claude` responder (PR 0) |
-| `.claude/hooks/format-on-edit.sh` | Reads hook JSON, formats one file (PR 1) |
+| `clinic-app/.claude/hooks/format-on-edit.sh` | Reads hook JSON, formats one file (PR 1) |
 | `.claude/hooks/notify-on-finish.sh` | Desktop notification (PR 2) |
 | `.claude/settings.json` | Registers the hooks (PR 1, PR 2) |
 | `clinic-app/backend/pyproject.toml` | Add `ruff` to dev group (PR 1) |
@@ -227,12 +227,12 @@ Branch: `feat/12-format-on-edit-hook`, from `main` (after PR 0 is merged).
 - Modify: `clinic-app/backend/pyproject.toml` (dev group)
 - Modify: `clinic-app/frontend/package.json`, `package-lock.json`
 - Create: `clinic-app/frontend/.prettierrc`
-- Create: `.claude/hooks/format-on-edit.sh`
-- Create: `.claude/settings.json` entry (file exists; add a `hooks` key)
+- Create: `clinic-app/.claude/hooks/format-on-edit.sh`
+- Create: `clinic-app/.claude/settings.json` (registers the hook; scoped to clinic-app, so it applies when Claude is launched from `clinic-app/`)
 
 **Interfaces:**
 - Consumes: Claude Code PostToolUse stdin JSON with `.tool_input.file_path`.
-- Produces: `.claude/hooks/format-on-edit.sh`, executable, always exits 0.
+- Produces: `clinic-app/.claude/hooks/format-on-edit.sh`, executable, always exits 0.
 
 **Acceptance Criteria:**
 - [ ] `.py` under `clinic-app/backend/` and `.ts/.tsx` under `clinic-app/frontend/src/` are formatted by the script
@@ -280,14 +280,14 @@ The script does not exist yet. Prepare two scratch files and run the (missing) s
 ```bash
 printf 'x   =   1\n' > clinic-app/backend/app/_scratch.py
 printf 'const   a  =  1\n' > clinic-app/frontend/src/_scratch.ts
-echo '{"tool_input":{"file_path":"'"$PWD"'/clinic-app/backend/app/_scratch.py"}}' | .claude/hooks/format-on-edit.sh
+echo '{"tool_input":{"file_path":"'"$PWD"'/clinic-app/backend/app/_scratch.py"}}' | clinic-app/.claude/hooks/format-on-edit.sh
 ```
 
 Expected: `No such file or directory`
 
 - [ ] **Step 6: Write the script**
 
-`.claude/hooks/format-on-edit.sh`:
+`clinic-app/.claude/hooks/format-on-edit.sh`:
 
 ```bash
 #!/usr/bin/env bash
@@ -307,14 +307,14 @@ esac
 exit 0
 ```
 
-Run: `chmod +x .claude/hooks/format-on-edit.sh`
+Run: `chmod +x clinic-app/.claude/hooks/format-on-edit.sh`
 
 - [ ] **Step 7: Run the check and make it pass**
 
 ```bash
-echo '{"tool_input":{"file_path":"'"$PWD"'/clinic-app/backend/app/_scratch.py"}}' | .claude/hooks/format-on-edit.sh
-echo '{"tool_input":{"file_path":"'"$PWD"'/clinic-app/frontend/src/_scratch.ts"}}' | .claude/hooks/format-on-edit.sh
-echo '{"tool_input":{"file_path":"'"$PWD"'/README.md"}}' | .claude/hooks/format-on-edit.sh; echo "exit=$?"
+echo '{"tool_input":{"file_path":"'"$PWD"'/clinic-app/backend/app/_scratch.py"}}' | clinic-app/.claude/hooks/format-on-edit.sh
+echo '{"tool_input":{"file_path":"'"$PWD"'/clinic-app/frontend/src/_scratch.ts"}}' | clinic-app/.claude/hooks/format-on-edit.sh
+echo '{"tool_input":{"file_path":"'"$PWD"'/README.md"}}' | clinic-app/.claude/hooks/format-on-edit.sh; echo "exit=$?"
 cat clinic-app/backend/app/_scratch.py clinic-app/frontend/src/_scratch.ts
 ```
 
@@ -322,7 +322,7 @@ Expected: `x = 1` and `const a = 1;`, then `exit=0` for the README call. Then re
 
 - [ ] **Step 8: Register the hook**
 
-Add to `.claude/settings.json` at the top level, keeping the existing keys:
+Create `clinic-app/.claude/settings.json`:
 
 ```json
 "hooks": {
@@ -337,7 +337,7 @@ Add to `.claude/settings.json` at the top level, keeping the existing keys:
 }
 ```
 
-Validate: `jq . .claude/settings.json > /dev/null && echo ok`
+Validate: `jq . clinic-app/.claude/settings.json > /dev/null && echo ok`
 
 - [ ] **Step 9: Test it live**
 
@@ -351,7 +351,7 @@ Expected: backend and frontend tests pass.
 - [ ] **Step 11: Commit**
 
 ```bash
-git add .claude/hooks/format-on-edit.sh .claude/settings.json clinic-app/backend/pyproject.toml clinic-app/backend/uv.lock clinic-app/frontend/package.json clinic-app/frontend/package-lock.json clinic-app/frontend/.prettierrc
+git add clinic-app/.claude/hooks/format-on-edit.sh clinic-app/.claude/settings.json clinic-app/backend/pyproject.toml clinic-app/backend/uv.lock clinic-app/frontend/package.json clinic-app/frontend/package-lock.json clinic-app/frontend/.prettierrc
 git commit -m "feat(hooks): format files on edit with ruff and prettier"
 ```
 
