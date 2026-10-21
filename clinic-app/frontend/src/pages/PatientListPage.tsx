@@ -34,7 +34,9 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
   return (
     <main>
       <h1>Patients</h1>
-      <div className="actions"><button onClick={onRevenue}>Revenue</button></div>
+      <div className="actions">
+        <button onClick={onRevenue}>Revenue</button>
+      </div>
 
       <FollowUps onOpen={onOpen} />
 
@@ -58,30 +60,38 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
       {patients.length === 0 ? (
         <p>No patients yet.</p>
       ) : (
-        <div className="table-wrap"><table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Birth year</th>
-              <th>Phone</th>
-              <th>Last visit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {patients.map((p) => (
-              <tr key={p.id}>
-                <td>
-                  <a href="#" onClick={(e) => { e.preventDefault(); onOpen(p.id); }}>
-                    {p.full_name}
-                  </a>
-                </td>
-                <td>{p.birth_year ?? ""}</td>
-                <td>{p.phone ?? ""}</td>
-                <td>{p.last_visit_date ?? ""}</td>
+        <div className="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Birth year</th>
+                <th>Phone</th>
+                <th>Last visit</th>
               </tr>
-            ))}
-          </tbody>
-        </table></div>
+            </thead>
+            <tbody>
+              {patients.map((p) => (
+                <tr key={p.id}>
+                  <td>
+                    <a
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onOpen(p.id);
+                      }}
+                    >
+                      {p.full_name}
+                    </a>
+                  </td>
+                  <td>{p.birth_year ?? ""}</td>
+                  <td>{p.phone ?? ""}</td>
+                  <td>{p.last_visit_date ?? ""}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </main>
   );

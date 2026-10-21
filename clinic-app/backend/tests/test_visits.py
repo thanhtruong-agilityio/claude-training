@@ -44,7 +44,9 @@ def test_create_for_archived_patient_409(client, patient):
 
 
 def test_put_replaces_fields_and_items(client, patient, make_visit):
-    visit = make_visit(patient["id"], fee=100000, paid_amount=0, items=[{"drug_name": "A", "days": 1}])
+    visit = make_visit(
+        patient["id"], fee=100000, paid_amount=0, items=[{"drug_name": "A", "days": 1}]
+    )
     res = client.put(
         f"/visits/{visit['id']}",
         json={

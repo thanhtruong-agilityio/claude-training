@@ -1,8 +1,6 @@
 from sqlmodel import Session, SQLModel, create_engine
 
-engine = create_engine(
-    "sqlite:///clinic.db", connect_args={"check_same_thread": False}
-)
+engine = create_engine("sqlite:///clinic.db", connect_args={"check_same_thread": False})
 
 
 def init_db() -> None:

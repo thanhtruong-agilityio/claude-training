@@ -25,7 +25,9 @@ def test_revenue_sums_inclusive_range_and_skips_deleted(client, patient, make_vi
     make_visit(patient["id"], visited_at="2026-05-01T08:00:00", fee=100000, paid_amount=100000)
     make_visit(patient["id"], visited_at="2026-05-02T23:30:00", fee=200000, paid_amount=50000)
     make_visit(patient["id"], visited_at="2026-05-03T00:00:00", fee=999, paid_amount=999)
-    gone = make_visit(patient["id"], visited_at="2026-05-01T10:00:00", fee=500000, paid_amount=500000)
+    gone = make_visit(
+        patient["id"], visited_at="2026-05-01T10:00:00", fee=500000, paid_amount=500000
+    )
     client.delete(f"/visits/{gone['id']}")
 
     res = client.get("/reports/revenue", params={"from": "2026-05-01", "to": "2026-05-02"})
