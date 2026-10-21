@@ -3,10 +3,7 @@ import PatientListPage from "./pages/PatientListPage";
 import PatientRecordPage from "./pages/PatientRecordPage";
 import RevenuePage from "./pages/RevenuePage";
 
-export type View =
-  | { name: "patients" }
-  | { name: "patient"; id: number }
-  | { name: "revenue" };
+export type View = { name: "patients" } | { name: "patient"; id: number } | { name: "revenue" };
 
 export default function App() {
   const [view, setView] = useState<View>({ name: "patients" });

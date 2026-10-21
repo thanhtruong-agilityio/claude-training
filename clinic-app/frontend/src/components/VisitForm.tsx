@@ -76,21 +76,47 @@ export default function VisitForm({ initial, onSubmit, onCancel }: Props) {
 
   return (
     <form onSubmit={submit}>
-      <label>Symptoms <textarea value={symptoms} onChange={(e) => setSymptoms(e.target.value)} /></label>
-      <label>Diagnosis <textarea value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} /></label>
-      <label>Notes <textarea value={notes} onChange={(e) => setNotes(e.target.value)} /></label>
+      <label>
+        Symptoms <textarea value={symptoms} onChange={(e) => setSymptoms(e.target.value)} />
+      </label>
+      <label>
+        Diagnosis <textarea value={diagnosis} onChange={(e) => setDiagnosis(e.target.value)} />
+      </label>
+      <label>
+        Notes <textarea value={notes} onChange={(e) => setNotes(e.target.value)} />
+      </label>
 
-      <label>Weight (kg) <input value={weight} onChange={(e) => setWeight(e.target.value)} /></label>
-      <label>Temperature (°C) <input value={temp} onChange={(e) => setTemp(e.target.value)} /></label>
-      <label>Blood pressure <input value={bp} onChange={(e) => setBp(e.target.value)} /></label>
+      <label>
+        Weight (kg) <input value={weight} onChange={(e) => setWeight(e.target.value)} />
+      </label>
+      <label>
+        Temperature (°C) <input value={temp} onChange={(e) => setTemp(e.target.value)} />
+      </label>
+      <label>
+        Blood pressure <input value={bp} onChange={(e) => setBp(e.target.value)} />
+      </label>
 
       <h3>Prescription</h3>
       {rows.map((row, i) => (
         <div key={i} className="row">
-          <label>Drug name <input value={row.drug_name} onChange={(e) => setRow(i, { drug_name: e.target.value })} /></label>
-          <label>Dosage <input value={row.dosage} onChange={(e) => setRow(i, { dosage: e.target.value })} /></label>
-          <label>Days <input value={row.days} onChange={(e) => setRow(i, { days: e.target.value })} /></label>
-          <label>Drug note <input value={row.note} onChange={(e) => setRow(i, { note: e.target.value })} /></label>
+          <label>
+            Drug name{" "}
+            <input
+              value={row.drug_name}
+              onChange={(e) => setRow(i, { drug_name: e.target.value })}
+            />
+          </label>
+          <label>
+            Dosage{" "}
+            <input value={row.dosage} onChange={(e) => setRow(i, { dosage: e.target.value })} />
+          </label>
+          <label>
+            Days <input value={row.days} onChange={(e) => setRow(i, { days: e.target.value })} />
+          </label>
+          <label>
+            Drug note{" "}
+            <input value={row.note} onChange={(e) => setRow(i, { note: e.target.value })} />
+          </label>
           <button type="button" onClick={() => setRows((rs) => rs.filter((_, j) => j !== i))}>
             Remove
           </button>
@@ -100,13 +126,22 @@ export default function VisitForm({ initial, onSubmit, onCancel }: Props) {
         Add drug
       </button>
 
-      <label>Fee <input value={fee} onChange={(e) => setFee(e.target.value)} /></label>
-      <label>Paid <input value={paid} onChange={(e) => setPaid(e.target.value)} /></label>
-      <label>Follow-up date <input type="date" value={followUp} onChange={(e) => setFollowUp(e.target.value)} /></label>
+      <label>
+        Fee <input value={fee} onChange={(e) => setFee(e.target.value)} />
+      </label>
+      <label>
+        Paid <input value={paid} onChange={(e) => setPaid(e.target.value)} />
+      </label>
+      <label>
+        Follow-up date{" "}
+        <input type="date" value={followUp} onChange={(e) => setFollowUp(e.target.value)} />
+      </label>
 
       {error && <p role="alert">{error}</p>}
       <button type="submit">Save visit</button>
-      <button type="button" onClick={onCancel}>Cancel</button>
+      <button type="button" onClick={onCancel}>
+        Cancel
+      </button>
     </form>
   );
 }
