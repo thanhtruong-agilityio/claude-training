@@ -17,6 +17,14 @@ test-backend:
 test-frontend:
 	docker compose run --rm --no-deps frontend npm test
 
-backup: ## copy the database to backups/clinic-<timestamp>.db
-	@mkdir -p backups
-	cp backend/clinic.db backups/clinic-$$(date +%Y%m%d-%H%M%S).db
+DB ?= backend/clinic.db
+BACKUP_DIR ?= backups
+
+backup: ## snapshot the database to backups/clinic-<timestamp>.db and verify it
+	@test -f "$(DB)" || { echo "backup failed: $(DB) not found" >&2; exit 1; }
+	@mkdir -p "$(BACKUP_DIR)"
+	@f="$(BACKUP_DIR)/clinic-$$(date +%Y%m%d-%H%M%S).db"; \
+	sqlite3 "$(DB)" ".backup '$$f'" || { rm -f "$$f"; echo "backup failed: could not copy $(DB)" >&2; exit 1; }; \
+	r=$$(sqlite3 "$$f" "PRAGMA integrity_check;"); \
+	if [ "$$r" != "ok" ]; then rm -f "$$f"; echo "backup failed: integrity check said: $$r" >&2; exit 1; fi; \
+	echo "backup ok: $$f"
