@@ -32,9 +32,7 @@ def _list(session: Session, q: str | None, include_archived: bool) -> list[Patie
     if q and q.strip():
         needle = _norm(q.strip())
         patients = [
-            p
-            for p in patients
-            if needle in _norm(p.full_name) or needle in (p.phone or "")
+            p for p in patients if needle in _norm(p.full_name) or needle in (p.phone or "")
         ]
     last: dict[int, date] = {}
     rows = session.exec(
@@ -43,10 +41,7 @@ def _list(session: Session, q: str | None, include_archived: bool) -> list[Patie
     for patient_id, visited_at in rows:
         if patient_id not in last or visited_at.date() > last[patient_id]:
             last[patient_id] = visited_at.date()
-    return [
-        PatientListItem(**p.model_dump(), last_visit_date=last.get(p.id))
-        for p in patients
-    ]
+    return [PatientListItem(**p.model_dump(), last_visit_date=last.get(p.id)) for p in patients]
 
 
 @router.get("", response_model=list[PatientListItem])
@@ -85,9 +80,7 @@ def get_patient(patient_id: int, session: Session = Depends(get_session)):
 
 
 @router.patch("/{patient_id}", response_model=PatientRead)
-def update_patient(
-    patient_id: int, data: PatientUpdate, session: Session = Depends(get_session)
-):
+def update_patient(patient_id: int, data: PatientUpdate, session: Session = Depends(get_session)):
     patient = session.get(Patient, patient_id)
     if not patient:
         raise HTTPException(status_code=404, detail="Patient not found")

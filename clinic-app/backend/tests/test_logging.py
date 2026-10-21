@@ -50,6 +50,8 @@ def test_search_term_is_not_written_to_access_log(access_log, term):
     # Same request the UI sends (frontend/src/api.ts listPatients).
     res = httpx.post(f"{access_log.base_url}/patients/search", json={"q": term})
     assert res.status_code == 200
-    assert any('"POST /patients/search' in line and line.endswith("200") for line in access_log.lines)
+    assert any(
+        '"POST /patients/search' in line and line.endswith("200") for line in access_log.lines
+    )
     leaked = [line for line in access_log.lines if term in unquote_plus(line)]
     assert leaked == []
