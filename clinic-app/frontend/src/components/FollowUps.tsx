@@ -17,7 +17,13 @@ export default function FollowUps({ onOpen }: { onOpen: (patientId: number) => v
       <ul>
         {rows.map((r) => (
           <li key={r.visit_id}>
-            <a href="#" onClick={(e) => { e.preventDefault(); onOpen(r.patient_id); }}>
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onOpen(r.patient_id);
+              }}
+            >
               {r.full_name}
             </a>{" "}
             {r.phone ?? ""}

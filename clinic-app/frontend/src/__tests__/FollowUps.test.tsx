@@ -14,7 +14,13 @@ test("shows nothing when no follow-ups", async () => {
 
 test("lists follow-ups and opens the patient", async () => {
   vi.mocked(api.listFollowUps).mockResolvedValue([
-    { visit_id: 7, patient_id: 3, full_name: "Tran B", phone: "0911", follow_up_date: "2026-05-01" },
+    {
+      visit_id: 7,
+      patient_id: 3,
+      full_name: "Tran B",
+      phone: "0911",
+      follow_up_date: "2026-05-01",
+    },
   ]);
   const onOpen = vi.fn();
   render(<FollowUps onOpen={onOpen} />);

@@ -29,9 +29,7 @@ def _get_visit(session: Session, visit_id: int, include_deleted: bool = False) -
 
 
 @router.post("/patients/{patient_id}/visits", response_model=VisitRead, status_code=201)
-def create_visit(
-    patient_id: int, data: VisitWrite, session: Session = Depends(get_session)
-):
+def create_visit(patient_id: int, data: VisitWrite, session: Session = Depends(get_session)):
     _require_active(_get_patient(session, patient_id))
     visit = Visit(**data.model_dump(exclude={"items"}), patient_id=patient_id)
     session.add(visit)
@@ -49,9 +47,7 @@ def get_visit(visit_id: int, session: Session = Depends(get_session)):
 
 
 @router.put("/visits/{visit_id}", response_model=VisitRead)
-def update_visit(
-    visit_id: int, data: VisitWrite, session: Session = Depends(get_session)
-):
+def update_visit(visit_id: int, data: VisitWrite, session: Session = Depends(get_session)):
     visit = _get_visit(session, visit_id)
     _require_active(_get_patient(session, visit.patient_id))
     visit.sqlmodel_update(data.model_dump(exclude={"items"}))
