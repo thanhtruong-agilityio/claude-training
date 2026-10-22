@@ -21,7 +21,6 @@ def follow_ups(
         .join(Patient, Patient.id == Visit.patient_id)
         .where(
             Visit.follow_up_date == day,
-            col(Visit.deleted_at).is_(None),
             col(Patient.is_archived).is_(False),
         )
         .order_by(Patient.full_name)
@@ -51,12 +50,12 @@ def revenue(
     visits = session.exec(
         select(Visit).where(
             Visit.visited_at >= start,
-            Visit.visited_at < end,
+            Visit.visited_at <= end,
             col(Visit.deleted_at).is_(None),
         )
     ).all()
     return RevenueRead(
         visit_count=len(visits),
         collected=sum(v.paid_amount for v in visits),
-        owed=sum(v.fee - v.paid_amount for v in visits),
+        owed=sum(v.fee for v in visits),
     )
