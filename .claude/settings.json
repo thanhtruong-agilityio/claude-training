@@ -1,8 +1,9 @@
 {
   "extraKnownMarketplaces": {
-    "cl": { "source": { "source": "github", "repo": "thanhtruong-agilityio/claude-config" } }
+    "cl": { "source": { "source": "github", "repo": "thanhtruong-agilityio/claude-config" } },
+    "claude-code-plugins": { "source": { "source": "github", "repo": "anthropics/claude-code" } }
   },
-  "enabledPlugins": { "cl-core@cl": true, "cl-dev@cl": true, "cl-ba-qa@cl": true },
+  "enabledPlugins": { "cl-core@cl": true, "cl-dev@cl": true, "cl-ba-qa@cl": true, "security-guidance@claude-code-plugins": true, "claude-security@claude-plugins-official": true },
   "model": "claude-sonnet-5-5",
   "advisorModel": "opus",
   "permissions": {

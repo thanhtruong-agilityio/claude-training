@@ -1,0 +1,358 @@
+{
+  "$schema": "https://docs.oasis-open.org/sarif/sarif/v2.1.0/errata01/os/schemas/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Claude Security Plugin for Claude Code",
+          "organization": "Anthropic",
+          "informationUri": "https://claude.com/product/claude-security",
+          "version": "0.12.0",
+          "rules": [
+            {
+              "id": "CWE-306",
+              "name": "MissingAuthenticationForCriticalFunction",
+              "shortDescription": {
+                "text": "Missing Authentication for Critical Function"
+              },
+              "fullDescription": {
+                "text": "Missing Authentication for Critical Function (CWE-306, CWE 4.20): findings whose CWE is this entry of the Simplified Mapping view or rolls up to it, reported by Claude Security Plugin for Claude Code from static review of the source."
+              },
+              "help": {
+                "text": "Each alert's message names the finding's own CWE and states the impact, exploit scenario, preconditions and recommended fix; the finding appears under its F<n> id in CLAUDE-SECURITY-RESULTS.md."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/306.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-306"
+                ]
+              }
+            },
+            {
+              "id": "CWE-346",
+              "name": "OriginValidationError",
+              "shortDescription": {
+                "text": "Origin Validation Error"
+              },
+              "fullDescription": {
+                "text": "Origin Validation Error (CWE-346, CWE 4.20): findings whose CWE is this entry of the Simplified Mapping view or rolls up to it, reported by Claude Security Plugin for Claude Code from static review of the source."
+              },
+              "help": {
+                "text": "Each alert's message names the finding's own CWE and states the impact, exploit scenario, preconditions and recommended fix; the finding appears under its F<n> id in CLAUDE-SECURITY-RESULTS.md."
+              },
+              "helpUri": "https://cwe.mitre.org/data/definitions/346.html",
+              "properties": {
+                "tags": [
+                  "security",
+                  "external/cwe/cwe-346"
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "automationDetails": {
+        "id": "claude-security-plugin/scan/clinic-app/29a13287-69ec-4655-83cc-07943f1e1ae0",
+        "guid": "29a13287-69ec-4655-83cc-07943f1e1ae0"
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true,
+          "toolExecutionNotifications": [
+            {
+              "descriptor": {
+                "id": "coverage/skipped-component"
+              },
+              "level": "note",
+              "message": {
+                "text": "Skipped component python-venv: Vendored third-party Python virtualenv; not project code"
+              }
+            },
+            {
+              "descriptor": {
+                "id": "coverage/skipped-component"
+              },
+              "level": "note",
+              "message": {
+                "text": "Skipped component node-modules: Third-party npm dependency tree; not project code"
+              }
+            },
+            {
+              "descriptor": {
+                "id": "coverage/skipped-component"
+              },
+              "level": "note",
+              "message": {
+                "text": "Skipped component lockfiles: Generated lockfiles"
+              }
+            },
+            {
+              "descriptor": {
+                "id": "coverage/skipped-component"
+              },
+              "level": "note",
+              "message": {
+                "text": "Skipped component out-of-scope-root: Outside the requested scan scope (clinic-app); Markdown notes and repo config at repo root"
+              }
+            },
+            {
+              "descriptor": {
+                "id": "coverage/files-not-reached"
+              },
+              "level": "note",
+              "message": {
+                "text": "Research coverage: of 52 files in the components researched, 50 read to a conclusion, 1 declared not reached, 1 in no researcher's account; 7 more outside every component"
+              }
+            }
+          ]
+        }
+      ],
+      "originalUriBaseIds": {
+        "%SRCROOT%": {
+          "description": {
+            "text": "The top level of the scanned repository, or the scanned directory when the scan did not run inside a git checkout."
+          }
+        }
+      },
+      "results": [
+        {
+          "ruleId": "CWE-306",
+          "ruleIndex": 0,
+          "level": "warning",
+          "message": {
+            "text": "Patient-data API published on :8000 with no authentication or Host validation; the localhost bind is the only access control.\n\nThe backend router handlers have no auth dependency, and main.py adds only CORSMiddleware, with no TrustedHostMiddleware or Host check. The compose file publishes the API on 127.0.0.1:8000, and the docs (data-safety SKILL.md:12, README) treat that bind as the sole protection. A web page the doctor opens can reach the port through DNS rebinding or, for body-less POSTs, plain cross-site requests. Browsers treat a rebound page as same-origin, so the CORS allow-list does not apply.\n\nImpact: Disclosure and modification of patient records (names, phones, symptoms, prescriptions, fees) by any web page the clinic user visits, plus access by any other local user or process on the machine.\n\nExploit scenario: The doctor, with `make up` running, visits an attacker-controlled site such as evil.example. The attacker's DNS first returns the attacker IP, then rebinds the name to 127.0.0.1. The page's JavaScript calls evil.example:8000/patients and /patients/{id}, which uvicorn serves for any Host header. The attacker reads patient names, phones and prescriptions, and can POST, PATCH, PUT or DELETE records. The page can also fire a blind cross-site POST /visits/{id}/restore, because that request has no body and needs no preflight. The frontend dev server on :5173 is not exposed this way: the lockfile pins vite 5.4.21, which has the allowedHosts check and restricted CORS defaults. Port 8000 is exposed.\n\nPreconditions: The stack is running via docker compose; The victim browses to an attacker-controlled page while it runs; The attacker's DNS rebinding is not filtered by the victim's resolver or browser; Alternatively, the attacker is a local user or process on the host.\n\nRecommendation: Add real authentication, even a shared secret or token that the Vite proxy injects. At minimum, add Starlette TrustedHostMiddleware (allowed_hosts of localhost and 127.0.0.1, plus the compose service name backend) to the backend. Do not publish port 8000 to the host at all, because the frontend reaches the backend over the compose network through the /api proxy.\n\nCWE-306. Severity MEDIUM, confidence low."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "clinic-app/docker-compose.yml",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 7,
+                  "snippet": {
+                    "text": "      - \"127.0.0.1:8000:8000\""
+                  }
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "services.backend.ports",
+                  "fullyQualifiedName": "services.backend.ports"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "claudeSecurityPlugin": {
+              "id": "F1",
+              "title": "Patient-data API published on :8000 with no authentication or Host validation; the localhost bind is the only access control",
+              "impact": "Disclosure and modification of patient records (names, phones, symptoms, prescriptions, fees) by any web page the clinic user visits, plus access by any other local user or process on the machine.",
+              "file": "clinic-app/docker-compose.yml",
+              "line": 7,
+              "description": "The backend router handlers have no auth dependency, and main.py adds only CORSMiddleware, with no TrustedHostMiddleware or Host check. The compose file publishes the API on 127.0.0.1:8000, and the docs (data-safety SKILL.md:12, README) treat that bind as the sole protection. A web page the doctor opens can reach the port through DNS rebinding or, for body-less POSTs, plain cross-site requests. Browsers treat a rebound page as same-origin, so the CORS allow-list does not apply.",
+              "exploit_scenario": "The doctor, with `make up` running, visits an attacker-controlled site such as evil.example. The attacker's DNS first returns the attacker IP, then rebinds the name to 127.0.0.1. The page's JavaScript calls evil.example:8000/patients and /patients/{id}, which uvicorn serves for any Host header. The attacker reads patient names, phones and prescriptions, and can POST, PATCH, PUT or DELETE records. The page can also fire a blind cross-site POST /visits/{id}/restore, because that request has no body and needs no preflight. The frontend dev server on :5173 is not exposed this way: the lockfile pins vite 5.4.21, which has the allowedHosts check and restricted CORS defaults. Port 8000 is exposed.",
+              "preconditions": [
+                "The stack is running via docker compose",
+                "The victim browses to an attacker-controlled page while it runs",
+                "The attacker's DNS rebinding is not filtered by the victim's resolver or browser",
+                "Alternatively, the attacker is a local user or process on the host"
+              ],
+              "category": "Missing Authentication for Critical Function",
+              "severity": "MEDIUM",
+              "confidence": "low",
+              "recommendation": "Add real authentication, even a shared secret or token that the Vite proxy injects. At minimum, add Starlette TrustedHostMiddleware (allowed_hosts of localhost and 127.0.0.1, plus the compose service name backend) to the backend. Do not publish port 8000 to the host at all, because the frontend reaches the backend over the compose network through the /api proxy.",
+              "cwe_id": "CWE-306",
+              "snippet": "      - \"127.0.0.1:8000:8000\"",
+              "symbol": "services.backend.ports",
+              "declared_line": 7,
+              "via_change": null,
+              "other_cwe_ids": [],
+              "claudeSecurityPluginFindingId": "v3:afc478a4de504658caa9ce014b5306647801888fcb7867686c5891eea091d426",
+              "verification": {
+                "panel": {
+                  "true": 3,
+                  "false": 0,
+                  "voters": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "ruleId": "CWE-346",
+          "ruleIndex": 1,
+          "level": "note",
+          "message": {
+            "text": "No Host/origin validation lets a malicious web page reach the unauthenticated localhost API (DNS rebinding / cross-site simple requests).\n\nThe API has no authentication and no TrustedHostMiddleware, so its only barrier against the doctor's own browser is the browser's same-origin policy. A page on an attacker-controlled hostname that is rebound to 127.0.0.1 would be same-origin with the backend and could read and write all PHI. CORS is not a server-side check, and no CSRF or Host check exists.\n\nImpact: Remote attackers can drive the local clinic API through the victim's browser, giving PHI disclosure and record tampering, if the browser's private-network and local-network access protections do not block it.\n\nExploit scenario: The doctor visits a malicious page. (1) The page can fire a body-less cross-site POST at http://localhost:8000/visits/N/restore, which undeletes soft-deleted visits and needs no preflight. (2) With a DNS-rebinding hostname that resolves to 127.0.0.1, the uvicorn app accepts any Host header, so the page becomes same-origin and can GET /patients, PATCH patients, PUT or DELETE visits and read the responses.\n\nPreconditions: Victim browses to an attacker-controlled page while the clinic app is running; For the rebinding variant, the browser does not block public-to-loopback requests; For the CSRF variant, the attacker can guess sequential visit IDs.\n\nRecommendation: Add TrustedHostMiddleware(allowed_hosts=[\"localhost\",\"127.0.0.1\",\"backend\"]) and require an auth token (custom header or cookie with SameSite) on all routes. JSON-body routes already require Content-Type: application/json (FastAPI strict_content_type default in the locked 0.143.1), but body-less POST routes such as restore are not covered by that.\n\nCWE-346. Severity LOW, confidence low."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "clinic-app/backend/app/main.py",
+                  "uriBaseId": "%SRCROOT%"
+                },
+                "region": {
+                  "startLine": 16,
+                  "snippet": {
+                    "text": "app = FastAPI(title=\"Clinic App\", lifespan=lifespan)"
+                  }
+                }
+              },
+              "logicalLocations": [
+                {
+                  "name": "module-level app setup",
+                  "fullyQualifiedName": "module-level app setup"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "claudeSecurityPlugin": {
+              "id": "F2",
+              "title": "No Host/origin validation lets a malicious web page reach the unauthenticated localhost API (DNS rebinding / cross-site simple requests)",
+              "impact": "Remote attackers can drive the local clinic API through the victim's browser, giving PHI disclosure and record tampering, if the browser's private-network and local-network access protections do not block it.",
+              "file": "clinic-app/backend/app/main.py",
+              "line": 16,
+              "description": "The API has no authentication and no TrustedHostMiddleware, so its only barrier against the doctor's own browser is the browser's same-origin policy. A page on an attacker-controlled hostname that is rebound to 127.0.0.1 would be same-origin with the backend and could read and write all PHI. CORS is not a server-side check, and no CSRF or Host check exists.",
+              "exploit_scenario": "The doctor visits a malicious page. (1) The page can fire a body-less cross-site POST at http://localhost:8000/visits/N/restore, which undeletes soft-deleted visits and needs no preflight. (2) With a DNS-rebinding hostname that resolves to 127.0.0.1, the uvicorn app accepts any Host header, so the page becomes same-origin and can GET /patients, PATCH patients, PUT or DELETE visits and read the responses.",
+              "preconditions": [
+                "Victim browses to an attacker-controlled page while the clinic app is running",
+                "For the rebinding variant, the browser does not block public-to-loopback requests",
+                "For the CSRF variant, the attacker can guess sequential visit IDs"
+              ],
+              "category": "Origin Validation Error",
+              "severity": "LOW",
+              "confidence": "low",
+              "recommendation": "Add TrustedHostMiddleware(allowed_hosts=[\"localhost\",\"127.0.0.1\",\"backend\"]) and require an auth token (custom header or cookie with SameSite) on all routes. JSON-body routes already require Content-Type: application/json (FastAPI strict_content_type default in the locked 0.143.1), but body-less POST routes such as restore are not covered by that.",
+              "cwe_id": "CWE-346",
+              "snippet": "app = FastAPI(title=\"Clinic App\", lifespan=lifespan)",
+              "symbol": "module-level app setup",
+              "declared_line": 16,
+              "via_change": null,
+              "other_cwe_ids": [],
+              "claudeSecurityPluginFindingId": "v3:d0273a2c4d967a33319597de53ca1b1cdf95a63e9ecb5e52f216549a1244de83",
+              "verification": {
+                "panel": {
+                  "true": 3,
+                  "false": 0,
+                  "voters": 3
+                }
+              }
+            }
+          }
+        }
+      ],
+      "properties": {
+        "claudeSecurityPlugin": {
+          "generated_at": "2026-10-23T11:11:32+00:00",
+          "scan_id": "29a13287-69ec-4655-83cc-07943f1e1ae0",
+          "mode": "scan",
+          "scan_prefix": "",
+          "scope": [
+            "clinic-app"
+          ],
+          "revision": {
+            "versioned": true,
+            "commit": "920474b1094f90b4ae3fc211907b9b44be2b71d8",
+            "branch": "training/day-11",
+            "dirty": true
+          },
+          "revision_source": "self-reported",
+          "effort": "medium",
+          "run_shape": {
+            "requested_effort": "medium",
+            "collapsed": null,
+            "source": "coverage.json",
+            "diff_files": null,
+            "diff_lines": null,
+            "pre_existing": 0,
+            "scope_files": 59,
+            "empty_diff": false,
+            "empty_scope": false,
+            "researchers_dispatched": 11,
+            "skipped_components": [
+              {
+                "name": "python-venv",
+                "paths": [
+                  "clinic-app/backend/.venv"
+                ],
+                "reason": "Vendored third-party Python virtualenv; not project code"
+              },
+              {
+                "name": "node-modules",
+                "paths": [
+                  "clinic-app/frontend/node_modules"
+                ],
+                "reason": "Third-party npm dependency tree; not project code"
+              },
+              {
+                "name": "lockfiles",
+                "paths": [
+                  "clinic-app/backend/uv.lock",
+                  "clinic-app/frontend/package-lock.json"
+                ],
+                "reason": "Generated lockfiles"
+              },
+              {
+                "name": "out-of-scope-root",
+                "paths": [
+                  "docs",
+                  ".claude",
+                  ".github",
+                  "exercises"
+                ],
+                "reason": "Outside the requested scan scope (clinic-app); Markdown notes and repo config at repo root"
+              }
+            ],
+            "completeness_check_outcome": "not-applicable",
+            "unaccounted_top_level_dirs": [],
+            "inventory_fallback": null,
+            "top_level_dir_count": null,
+            "target_files": 59,
+            "component_cap": 24,
+            "research_coverage": {
+              "files": 52,
+              "read": 50,
+              "not_reached": 1,
+              "unaccounted": 1,
+              "outside_components": 7,
+              "capped": false
+            }
+          },
+          "findings": {
+            "total": 2,
+            "critical": 0,
+            "high": 0,
+            "medium": 1,
+            "low": 1
+          },
+          "verification": {
+            "status": "verified",
+            "candidates": 3,
+            "candidates_deduped": 3,
+            "panel_votes": 9,
+            "panel_reviewed_findings": 2,
+            "panel_quorum_findings": 2,
+            "unreviewed_candidate_sites": 0,
+            "incomplete_panel_candidates": 0,
+            "attested_findings": 0,
+            "reason": null,
+            "researchers_dispatched": 11,
+            "researchers_returned": 11
+          },
+          "target_kind": "git-remote"
+        }
+      },
+      "versionControlProvenance": [
+        {
+          "repositoryUri": "https://github.com/thanhtruong-agilityio/claude-training"
+        }
+      ]
+    }
+  ]
+}
