@@ -6,9 +6,17 @@ vi.mock("../api");
 
 const patients = [
   {
-    id: 1, full_name: "Nguyen Van A", birth_year: 1980, sex: "male",
-    phone: "0900000001", address: null, allergies: null, medical_history: null,
-    is_archived: false, created_at: "2026-01-01T00:00:00", last_visit_date: "2026-03-01",
+    id: 1,
+    full_name: "Nguyen Van A",
+    birth_year: 1980,
+    sex: "male",
+    phone: "0900000001",
+    address: null,
+    allergies: null,
+    medical_history: null,
+    is_archived: false,
+    created_at: "2026-01-01T00:00:00",
+    last_visit_date: "2026-03-01",
   },
 ];
 

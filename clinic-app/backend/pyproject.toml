@@ -14,8 +14,12 @@ dev = [
     "pytest>=8",
     "httpx>=0.27",
     "time-machine>=3.5.1",
+    "ruff>=0.17.1",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100

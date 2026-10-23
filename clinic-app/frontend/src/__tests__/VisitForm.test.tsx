@@ -31,9 +31,7 @@ test("submits one payload and drops blank prescription rows", () => {
   expect(payload.symptoms).toBe("cough");
   expect(payload.fee).toBe(100000);
   expect(payload.paid_amount).toBe(50000);
-  expect(payload.items).toEqual([
-    { drug_name: "Paracetamol", dosage: null, days: 3, note: null },
-  ]);
+  expect(payload.items).toEqual([{ drug_name: "Paracetamol", dosage: null, days: 3, note: null }]);
 });
 
 test("paid above fee shows an error and does not submit", () => {
@@ -49,10 +47,20 @@ test("paid above fee shows an error and does not submit", () => {
 test("edit keeps the original visit time", () => {
   const onSubmit = vi.fn();
   const initial = {
-    id: 1, patient_id: 1, visited_at: "2026-03-01T09:00:00", symptoms: "old",
-    diagnosis: null, notes: null, weight_kg: null, temperature_c: null,
-    blood_pressure: null, fee: 100, paid_amount: 0, follow_up_date: null,
-    deleted_at: null, items: [{ id: 5, drug_name: "A", dosage: null, days: 2, note: null }],
+    id: 1,
+    patient_id: 1,
+    visited_at: "2026-03-01T09:00:00",
+    symptoms: "old",
+    diagnosis: null,
+    notes: null,
+    weight_kg: null,
+    temperature_c: null,
+    blood_pressure: null,
+    fee: 100,
+    paid_amount: 0,
+    follow_up_date: null,
+    deleted_at: null,
+    items: [{ id: 5, drug_name: "A", dosage: null, days: 2, note: null }],
   };
   render(<VisitForm initial={initial} onSubmit={onSubmit} onCancel={() => {}} />);
   fill("Paid", "100");

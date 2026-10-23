@@ -19,8 +19,12 @@ export default function RevenuePage({ onBack }: { onBack: () => void }) {
     <main>
       <button onClick={onBack}>Back</button>
       <h1>Revenue</h1>
-      <label>From <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} /></label>
-      <label>To <input type="date" value={to} onChange={(e) => setTo(e.target.value)} /></label>
+      <label>
+        From <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
+      </label>
+      <label>
+        To <input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
+      </label>
       {from > to && <p role="alert">From must not be after To</p>}
       {revenue && (
         <ul className="stats">
