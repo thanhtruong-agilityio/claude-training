@@ -43,7 +43,20 @@ test("search refetches with the query", async () => {
   render(<PatientListPage onOpen={() => {}} onRevenue={() => {}} />);
   await screen.findByText("Nguyen Van A");
   fireEvent.change(screen.getByLabelText("Search"), { target: { value: "van" } });
-  await waitFor(() => expect(api.listPatients).toHaveBeenLastCalledWith("van"));
+  await waitFor(() => expect(api.listPatients).toHaveBeenLastCalledWith("van", false));
+});
+
+test("show archived refetches with archived included and marks them", async () => {
+  const archived = { ...patients[0], id: 2, full_name: "Tran B", is_archived: true };
+  vi.mocked(api.listPatients).mockImplementation(async (_q, includeArchived) =>
+    includeArchived ? [patients[0], archived] : [patients[0]],
+  );
+  render(<PatientListPage onOpen={() => {}} onRevenue={() => {}} />);
+  await screen.findByText("Nguyen Van A");
+  expect(screen.queryByText("Archived")).not.toBeInTheDocument();
+  fireEvent.click(screen.getByLabelText("Show archived"));
+  await waitFor(() => expect(api.listPatients).toHaveBeenLastCalledWith(undefined, true));
+  expect(await screen.findByText("Archived")).toBeInTheDocument();
 });
 
 test("blank name does not call the API", async () => {
