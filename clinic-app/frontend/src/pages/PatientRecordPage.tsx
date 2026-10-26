@@ -30,8 +30,8 @@ export default function PatientRecordPage({ id, onBack }: Props) {
 
   // Archiving asks twice on the page itself: window.confirm would block browser automation.
   const setArchived = async (is_archived: boolean) => {
-    await updatePatient(id, { is_archived });
     setConfirmingArchive(false);
+    await updatePatient(id, { is_archived });
     load();
   };
 
@@ -81,11 +81,13 @@ export default function PatientRecordPage({ id, onBack }: Props) {
       )}
 
       {mode.name === "view" ? (
-        <div className="actions">
-          <button className="btn-primary" onClick={() => setMode({ name: "new" })}>
-            New visit
-          </button>
-        </div>
+        !patient.is_archived && (
+          <div className="actions">
+            <button className="btn-primary" onClick={() => setMode({ name: "new" })}>
+              New visit
+            </button>
+          </div>
+        )
       ) : (
         <VisitForm
           initial={mode.name === "edit" ? mode.visit : undefined}

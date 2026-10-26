@@ -41,6 +41,22 @@ test("cancelling the archive confirmation does not call the API", async () => {
   expect(api.updatePatient).not.toHaveBeenCalled();
 });
 
+test("a second click on confirm does not send another request", async () => {
+  vi.mocked(api.updatePatient).mockReturnValue(new Promise(() => {}));
+  render(<PatientRecordPage id={1} onBack={() => {}} />);
+  fireEvent.click(await screen.findByText("Archive"));
+  fireEvent.click(screen.getByText("Confirm archive"));
+  expect(screen.queryByText("Confirm archive")).not.toBeInTheDocument();
+  expect(api.updatePatient).toHaveBeenCalledTimes(1);
+});
+
+test("an archived patient cannot get a new visit", async () => {
+  vi.mocked(api.getPatient).mockResolvedValue({ ...patient, is_archived: true });
+  render(<PatientRecordPage id={1} onBack={() => {}} />);
+  await screen.findByText("Unarchive");
+  expect(screen.queryByText("New visit")).not.toBeInTheDocument();
+});
+
 test("an archived patient shows a badge and can be unarchived", async () => {
   vi.mocked(api.getPatient).mockResolvedValue({ ...patient, is_archived: true });
   vi.mocked(api.updatePatient).mockResolvedValue(patient);
