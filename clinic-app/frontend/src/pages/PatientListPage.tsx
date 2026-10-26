@@ -14,9 +14,11 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [showArchived, setShowArchived] = useState(false);
+
   const load = useCallback(() => {
-    listPatients(query.trim() || undefined).then(setPatients);
-  }, [query]);
+    listPatients(query.trim() || undefined, showArchived).then(setPatients);
+  }, [query, showArchived]);
 
   useEffect(load, [load]);
 
@@ -43,6 +45,14 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
       <label>
         Search
         <input value={query} onChange={(e) => setQuery(e.target.value)} />
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          checked={showArchived}
+          onChange={(e) => setShowArchived(e.target.checked)}
+        />
+        Show archived
       </label>
 
       <form onSubmit={submit}>
@@ -83,6 +93,12 @@ export default function PatientListPage({ onOpen, onRevenue }: Props) {
                     >
                       {p.full_name}
                     </a>
+                    {p.is_archived && (
+                      <>
+                        {" "}
+                        <span className="meta">Archived</span>
+                      </>
+                    )}
                   </td>
                   <td>{p.birth_year ?? ""}</td>
                   <td>{p.phone ?? ""}</td>
