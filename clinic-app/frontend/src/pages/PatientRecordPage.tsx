@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { createVisit, deleteVisit, getPatient, updateVisit } from "../api";
+import { createVisit, deleteVisit, getPatient, updatePatient, updateVisit } from "../api";
 import VisitForm from "../components/VisitForm";
 import type { PatientDetail, Visit, VisitPayload } from "../types";
 
@@ -13,6 +13,7 @@ type Mode = { name: "view" } | { name: "new" } | { name: "edit"; visit: Visit };
 export default function PatientRecordPage({ id, onBack }: Props) {
   const [patient, setPatient] = useState<PatientDetail | null>(null);
   const [mode, setMode] = useState<Mode>({ name: "view" });
+  const [confirmingArchive, setConfirmingArchive] = useState(false);
 
   const load = useCallback(() => {
     getPatient(id).then(setPatient);
@@ -27,6 +28,13 @@ export default function PatientRecordPage({ id, onBack }: Props) {
     load();
   };
 
+  // Archiving asks twice on the page itself: window.confirm would block browser automation.
+  const setArchived = async (is_archived: boolean) => {
+    setConfirmingArchive(false);
+    await updatePatient(id, { is_archived });
+    load();
+  };
+
   const remove = async (visitId: number) => {
     await deleteVisit(visitId);
     load();
@@ -38,6 +46,21 @@ export default function PatientRecordPage({ id, onBack }: Props) {
     <main>
       <button onClick={onBack}>Back</button>
       <h1>{patient.full_name}</h1>
+      {patient.is_archived && <p className="meta">Archived</p>}
+      <div className="actions">
+        {patient.is_archived ? (
+          <button onClick={() => setArchived(false)}>Unarchive</button>
+        ) : confirmingArchive ? (
+          <>
+            <button className="btn-danger" onClick={() => setArchived(true)}>
+              Confirm archive
+            </button>
+            <button onClick={() => setConfirmingArchive(false)}>Cancel</button>
+          </>
+        ) : (
+          <button onClick={() => setConfirmingArchive(true)}>Archive</button>
+        )}
+      </div>
       <p className="meta">
         {patient.birth_year ?? "?"} · {patient.sex ?? "?"} · {patient.phone ?? ""} ·{" "}
         {patient.address ?? ""}
@@ -58,11 +81,13 @@ export default function PatientRecordPage({ id, onBack }: Props) {
       )}
 
       {mode.name === "view" ? (
-        <div className="actions">
-          <button className="btn-primary" onClick={() => setMode({ name: "new" })}>
-            New visit
-          </button>
-        </div>
+        !patient.is_archived && (
+          <div className="actions">
+            <button className="btn-primary" onClick={() => setMode({ name: "new" })}>
+              New visit
+            </button>
+          </div>
+        )
       ) : (
         <VisitForm
           initial={mode.name === "edit" ? mode.visit : undefined}

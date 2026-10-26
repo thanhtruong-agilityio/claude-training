@@ -40,7 +40,7 @@
 - [x] One MCP tool used end-to-end: GitHub MCP + Playwright (day 08), Claude in Chrome (day 11)
 - [x] One review report acted on: `/code-review` on PR #35, 2 of 7 findings fixed, table on the PR
 - [x] Role-day exercise: clinic-app browser test with Claude in Chrome, see [exercises/day-11.md](../exercises/day-11.md)
-- [ ] PR #35 (archive/unarchive UI, ticket 09) merged: no CI checks and no human review yet
+- [x] PR #35 (archive/unarchive UI, ticket 09) merged on 2026-10-26
 
 ---
 
