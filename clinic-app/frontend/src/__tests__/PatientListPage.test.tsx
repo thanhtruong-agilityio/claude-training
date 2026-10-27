@@ -99,3 +99,18 @@ test("T15-13 shows the due list together with the search box and add-patient for
   expect(screen.getByLabelText("Full name")).toBeInTheDocument();
   expect(screen.getByText("Add patient")).toBeInTheDocument();
 });
+
+test("T16-12 with the due list in error state, search and add-patient still work", async () => {
+  vi.mocked(api.getDueFollowUps).mockRejectedValue(new Error("Request failed: 500"));
+  vi.mocked(api.createPatient).mockResolvedValue(patients[0]);
+  render(<PatientListPage onOpen={() => {}} onRevenue={() => {}} />);
+  expect(await screen.findByText("Could not load follow-ups")).toBeInTheDocument();
+  await screen.findByText("Nguyen Van A");
+
+  fireEvent.change(screen.getByLabelText("Search"), { target: { value: "van" } });
+  await waitFor(() => expect(api.listPatients).toHaveBeenLastCalledWith("van", false));
+
+  fireEvent.change(screen.getByLabelText("Full name"), { target: { value: "Tran B" } });
+  fireEvent.click(screen.getByText("Add patient"));
+  await waitFor(() => expect(api.createPatient).toHaveBeenCalledWith({ full_name: "Tran B" }));
+});
