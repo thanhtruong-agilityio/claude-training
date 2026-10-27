@@ -4,7 +4,7 @@
 - **Trainee:** thanh.truong
 - **Branch:** `training/day-13`
 
-**Status:** Tickets 14 (BE) and 15 (FE) built in two isolated worktrees, one PR each, reviewed twice (self and `@claude`), tests green, both merged (#42, #43). Ticket 16 planned, plan waiting for approval, no code yet.
+**Status:** Tickets 14 (BE), 15 (FE) and 16 (FE states) built in isolated worktrees, one PR each, reviewed twice (self and `@claude`), tests green, all merged (#42, #43, #45). Day notes in #44.
 
 ---
 
@@ -18,25 +18,28 @@
 
 ### Build the follow-up dashboard (clinic-app)
 
-- [x] Plan mode first: plans for ticket 14 and 15 approved before any code
-- [x] Two worktrees, two isolated agent sessions, one ticket each
+- [x] Plan mode first: plans for tickets 14, 15 and 16 approved before any code
+- [x] Isolated worktrees and agent sessions, one ticket each: 14 and 15 in parallel, 16 after 15 merged
 - [x] QA step: matrix rows turned into failing tests first, then Dev made them green
 - [x] Ticket 14 (BE, issue #37): PR #42 opened, reviewed, review nits fixed
 - [x] Ticket 15 (FE, issue #38): PR #43 opened as draft, reviewed, review nits fixed, merged after #42
 - [x] Manual browser check with the real endpoint (fake data), AC12 long name
+- [x] Manual browser check of the three states of ticket 16 (empty, error with Try again, loading seen as a sequence), unbroken 80-character name
 - [x] PR #42 merged (squash, `b171ef9`)
 - [x] PR #43 brought up to date by merging `main`, set ready for review, merged (squash, `5f85a8a`)
 - [x] `@claude review` on PR #42 and PR #43: results read and checked against the code
-- [ ] Ticket 16 (FE states, issue #39): plan written and waiting for approval, no code yet
-- [ ] Ticket 16 built and merged
+- [x] Ticket 16 (FE states, issue #39): plan approved, PR #45 opened, reviewed, review fixes pushed
+- [x] PR #45 merged (squash, `a76d04d`)
+- [x] `@claude review` on PR #45: result read and checked with mutations
 - [ ] Another person reviewed the PRs, CI green (no CI runs on PRs, see takeaways)
 
 | Artifact | Where |
 |---|---|
 | Plan, ticket 14 | [docs/plans/2026-10-27-follow-up-dashboard-t14-plan.md](plans/2026-10-27-follow-up-dashboard-t14-plan.md) |
 | Plan, ticket 15 | [docs/plans/2026-10-27-follow-up-dashboard-t15-plan.md](plans/2026-10-27-follow-up-dashboard-t15-plan.md) |
-| Plan, ticket 16 | draft on the `feat/39-due-follow-ups-states` branch, not approved yet, no link |
-| PRs | #42 (BE endpoint, merged), #43 (FE list, merged) |
+| Plan, ticket 16 | [docs/plans/2026-10-27-follow-up-dashboard-t16-plan.md](plans/2026-10-27-follow-up-dashboard-t16-plan.md) |
+| PRs | #42 (BE endpoint), #43 (FE list), #45 (FE states), all merged |
+| States screenshots | [list, unbroken name](../exercises/day-13-states-list-unbroken-name.png), [error with Try again](../exercises/day-13-states-error-try-again.png) |
 | Browser check screenshots | [wide](../exercises/day-13-due-follow-ups-wide.png), [narrow](../exercises/day-13-due-follow-ups-narrow.png) |
 | GitLab sync of Day 12 | branch `sync/day-12` pushed; the merge request into GitLab `main` is opened and merged by hand (not confirmed) |
 
@@ -54,11 +57,12 @@
 - Ticket 16 depends on 15 and 15 on 14, so only two could run in parallel; the third waits for the merge
 - `make test-*` uses `docker compose run --rm --no-deps`: no published ports, so two worktrees test side by side. Only one can run `make up`
 
-| Step | Ticket 14 (BE) | Ticket 15 (FE) |
-|---|---|---|
-| Red (tests first) | 32 failed, 36 passed | 22 failed, 15 passed |
-| Green | 68 passed | 37 passed |
-| Review nits fixed | 3 (imports, narrower query, one 422 shape) | 2 (CSS class, wrapped import) |
+| Step | Ticket 14 (BE) | Ticket 15 (FE) | Ticket 16 (FE) |
+|---|---|---|---|
+| Red (tests first) | 32 failed, 36 passed | 22 failed, 15 passed | 13 failed, 38 passed |
+| Green | 68 passed | 37 passed | 51 passed |
+| After review | 70 passed | 37 passed | 52 passed |
+| Review fixes | 3 code nits, 2 test gaps | 2 code nits, 3 test gaps | 4 test gaps |
 
 **What went wrong (honest)**
 - Docker daemon was off: the BE agent stopped and reported blocked, no commits and no fake test results. I restarted it once the daemon was up. The FE agent opened Docker Desktop on its own, outside what I asked
@@ -71,13 +75,19 @@
 - Reviewed my own PRs in the order: correctness, tests, readability, security, scope. No blockers; five nits on each PR, the five code nits fixed (3 on #42, 2 on #43), the doc and cleanup ones left for later
 - Then asked `@claude` to review both PRs (comment `@claude review this PR`). It finds test gaps, not behavior bugs: #42 regex branch never exercised (`20261027` and `2026-W44-2` pass `fromisoformat`), latest-date test passed even if the last row won; #43 row-order test would not catch a sort by days or date, name never proven to be a link
 - It did not run the tests or any mutation, only read the code. I checked each point myself: ran the two `as_of` values, and confirmed with temporary mutations that the new tests fail when the rule is broken and pass with the real code (70 BE tests, 37 FE tests). Review output is a proposal until run
+- On #45 the bot was right once and wrong once, and only a mutation tells which: `console.error(err)` in the `catch` still passed 51 tests (the old log check used `JSON.stringify(Error)`, which is `{}`), so the test now asserts no console call at all; removing the `inFlight` guard failed T16-10, so the bot's doubt there did not hold
+- `React.StrictMode` runs the mount effect twice in development, so the `inFlight` guard is not redundant; my PR text said it was, corrected after the review
 - One point went to the ticket, not the code: `as_of` has no upper bound for the "came back" check (ticket 14, OQ2)
 - The only workflow is `claude.yml`: it runs only when a comment or review contains `@claude`. No `pull_request` trigger, so no test CI and no automatic review. "CI green" in the definition of done cannot be met today
 - Next step if wanted: a second workflow running `make test` on pull requests
 
 **Who edits what (rule of the day)**
 - Everything today was Claude-assisted: spec updates, tests, code, PR texts, this note. Human edit: plan approvals, review decisions, the "simple comparison" rule for names, merge decisions
-- The BA step found one new question during review (OQ2 on ticket 14, `as_of` upper bound); open question OQ1 (same-day visit counts as coming back) is still a working default, not a client answer. The unbroken-name check for AC12 is still open: the browser check used a name with spaces
+- Ticket 16 built last, one agent: test commit before any component code (checked with `git log`), after the ticket 15 agent had done it the other way round
+- The BA step found one new question during review (OQ2 on ticket 14, `as_of` upper bound); open question OQ1 (same-day visit counts as coming back) is still a working default, not a client answer. The unbroken-name check for AC12 was done with ticket 16 (80 `A`, wraps in its cell, page does not scroll sideways); a window narrower than about 1400px could not be tested because the resize did not apply
+
+**Found, not fixed**
+- With the backend down the patient list under the follow-ups block says "No patients yet." because its own request failure is not handled: the same kind of misleading blank that ticket 16 fixed for follow-ups. Candidate for a ticket
 
 **GitLab mirror**
 - Histories differ (GitHub squashes, GitLab merges `sync/day-NN`): sync is a branch plus a merge request, never a push to `main`. Packaged as the `sync-gitlab` skill (PR #41)
