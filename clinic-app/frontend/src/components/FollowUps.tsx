@@ -33,7 +33,7 @@ export default function FollowUps({ onOpen }: { onOpen: (patientId: number) => v
           <tbody>
             {data.items.map((r) => (
               <tr key={r.patient_id}>
-                <td style={{ overflowWrap: "anywhere" }}>
+                <td className="wrap-anywhere">
                   <a
                     href="#"
                     onClick={(e) => {

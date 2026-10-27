@@ -1,4 +1,12 @@
-import type { DueFollowUps, FollowUp, Patient, PatientDetail, Revenue, Visit, VisitPayload } from "./types";
+import type {
+  DueFollowUps,
+  FollowUp,
+  Patient,
+  PatientDetail,
+  Revenue,
+  Visit,
+  VisitPayload,
+} from "./types";
 
 const BASE = "/api";
 
