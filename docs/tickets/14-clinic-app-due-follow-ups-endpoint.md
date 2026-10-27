@@ -1,6 +1,7 @@
 # 14 - [BE] Add due follow-ups report endpoint
 
 - Spec: [follow-up dashboard](../specs/2026-10-27-follow-up-dashboard-spec.md)
+- Issue: https://github.com/thanhtruong-agilityio/claude-training/issues/37
 - Blocks: 15
 
 ## Context

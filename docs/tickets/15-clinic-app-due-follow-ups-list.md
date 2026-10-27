@@ -1,6 +1,7 @@
 # 15 - [FE] Show due follow-ups list on patient list page
 
 - Spec: [follow-up dashboard](../specs/2026-10-27-follow-up-dashboard-spec.md)
+- Issue: https://github.com/thanhtruong-agilityio/claude-training/issues/38
 - Blocked by: 14
 
 ## Context

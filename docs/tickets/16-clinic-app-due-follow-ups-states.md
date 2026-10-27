@@ -1,6 +1,7 @@
 # 16 - [FE] Add empty, loading, error states to due follow-ups list
 
 - Spec: [follow-up dashboard](../specs/2026-10-27-follow-up-dashboard-spec.md)
+- Issue: https://github.com/thanhtruong-agilityio/claude-training/issues/39
 - Blocked by: 15
 
 ## Context
