@@ -1,6 +1,7 @@
 import pytest
 import time_machine
 
+
 def test_follow_ups_route_is_not_shadowed_by_visit_id(client):
     res = client.get("/visits/follow-ups", params={"date": "2026-05-01"})
     assert res.status_code == 200

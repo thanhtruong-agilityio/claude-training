@@ -1,3 +1,4 @@
+import re
 from datetime import date, datetime, time, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -47,13 +48,20 @@ def follow_ups(
 
 @router.get("/reports/follow-ups", response_model=DueFollowUpsRead)
 def due_follow_ups(
-    as_of: str | None = Query(default=None, pattern=r"^\d{4}-\d{2}-\d{2}$"),
+    as_of: str | None = Query(default=None),
     session: Session = Depends(get_session),
 ):
-    try:
-        today = date.fromisoformat(as_of) if as_of is not None else clock.today()
-    except ValueError:
-        raise HTTPException(status_code=422, detail="as_of must be a valid YYYY-MM-DD date")
+    if as_of is None:
+        today = clock.today()
+    else:
+        try:
+            if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", as_of):
+                raise ValueError(as_of)
+            today = date.fromisoformat(as_of)
+        except ValueError:
+            raise HTTPException(
+                status_code=422, detail="as_of must be a valid YYYY-MM-DD date"
+            ) from None
     rows = session.exec(
         select(Visit, Patient)
         .join(Patient, Patient.id == Visit.patient_id)
@@ -67,7 +75,8 @@ def due_follow_ups(
     ).all()
     live = session.exec(
         select(Visit.patient_id, Visit.id, Visit.visited_at).where(
-            col(Visit.deleted_at).is_(None)
+            col(Visit.deleted_at).is_(None),
+            col(Visit.patient_id).in_({p.id for _, p in rows}),
         )
     ).all()
     visits: dict[int, list[tuple[int, datetime]]] = {}
