@@ -11,5 +11,5 @@ def load_visit_read(session: Session, visit: Visit) -> VisitRead:
     ).all()
     return VisitRead(
         **visit.model_dump(),
-        items=[PrescriptionItemRead.model_validate(i) for i in items],
+        items=[PrescriptionItemRead.model_validate(i) for i in list(items)],
     )
