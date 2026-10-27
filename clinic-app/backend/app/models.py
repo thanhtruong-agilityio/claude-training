@@ -165,6 +165,19 @@ class FollowUpRead(SQLModel):
     follow_up_date: date
 
 
+class DueFollowUpItem(SQLModel):
+    patient_id: int
+    full_name: str
+    phone: str | None
+    follow_up_date: date
+    days_overdue: int
+
+
+class DueFollowUpsRead(SQLModel):
+    total: int
+    items: list[DueFollowUpItem]
+
+
 class RevenueRead(SQLModel):
     visit_count: int
     collected: int

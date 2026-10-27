@@ -1,3 +1,4 @@
+import re
 from datetime import date, datetime, time, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -5,7 +6,14 @@ from sqlmodel import Session, col, select
 
 from app import clock
 from app.db import get_session
-from app.models import FollowUpRead, Patient, RevenueRead, Visit
+from app.models import (
+    DueFollowUpItem,
+    DueFollowUpsRead,
+    FollowUpRead,
+    Patient,
+    RevenueRead,
+    Visit,
+)
 
 router = APIRouter(tags=["reports"])
 
@@ -36,6 +44,63 @@ def follow_ups(
         )
         for v, p in rows
     ]
+
+
+@router.get("/reports/follow-ups", response_model=DueFollowUpsRead)
+def due_follow_ups(
+    as_of: str | None = Query(default=None),
+    session: Session = Depends(get_session),
+):
+    if as_of is None:
+        today = clock.today()
+    else:
+        try:
+            if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", as_of):
+                raise ValueError(as_of)
+            today = date.fromisoformat(as_of)
+        except ValueError:
+            raise HTTPException(
+                status_code=422, detail="as_of must be a valid YYYY-MM-DD date"
+            ) from None
+    rows = session.exec(
+        select(Visit, Patient)
+        .join(Patient, Patient.id == Visit.patient_id)
+        .where(
+            col(Visit.follow_up_date).is_not(None),
+            Visit.follow_up_date >= today - timedelta(days=30),
+            Visit.follow_up_date <= today,
+            col(Visit.deleted_at).is_(None),
+            col(Patient.is_archived).is_(False),
+        )
+    ).all()
+    live = session.exec(
+        select(Visit.patient_id, Visit.id, Visit.visited_at).where(
+            col(Visit.deleted_at).is_(None),
+            col(Visit.patient_id).in_({p.id for _, p in rows}),
+        )
+    ).all()
+    visits: dict[int, list[tuple[int, datetime]]] = {}
+    for patient_id, visit_id, visited_at in live:
+        visits.setdefault(patient_id, []).append((visit_id, visited_at))
+    best: dict[int, tuple[Visit, Patient]] = {}
+    for v, p in rows:
+        start = datetime.combine(v.follow_up_date, time.min)
+        if any(vid != v.id and at >= start for vid, at in visits.get(p.id, [])):
+            continue
+        if p.id not in best or v.follow_up_date > best[p.id][0].follow_up_date:
+            best[p.id] = (v, p)
+    items = [
+        DueFollowUpItem(
+            patient_id=p.id,
+            full_name=p.full_name,
+            phone=p.phone,
+            follow_up_date=v.follow_up_date,
+            days_overdue=(today - v.follow_up_date).days,
+        )
+        for v, p in best.values()
+    ]
+    items.sort(key=lambda i: (-i.days_overdue, i.full_name, i.patient_id))
+    return DueFollowUpsRead(total=len(items), items=items)
 
 
 @router.get("/reports/revenue", response_model=RevenueRead)
