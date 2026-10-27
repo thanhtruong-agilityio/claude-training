@@ -42,22 +42,22 @@ Out:
 - Removing the old `listFollowUps` API function or the old endpoint.
 
 ## Acceptance Criteria
-- [ ] AC1 Given the endpoint returns 3 items, when the patient list page opens, then the heading reads "3 patients to call" and 3 rows are shown.
-- [ ] AC2 Given the endpoint returns 1 item, when the page opens, then the heading reads "1 patient to call".
-- [ ] AC3 Given an item with name, phone, `follow_up_date` 2026-10-20 and `days_overdue` 7, when the page opens, then the row shows the name, the phone, "2026-10-20" and "7 days overdue".
-- [ ] AC4 Given an item with `days_overdue` 0, when the page opens, then the row shows "Today" and not "0 days overdue".
-- [ ] AC5a Given an item with `days_overdue` 1, when the page opens, then the row shows "1 day overdue".
-- [ ] AC5b Given an item with `days_overdue` 2, when the page opens, then the row shows "2 days overdue".
-- [ ] AC6 Given an item with `phone` null, when the page opens, then the row has an empty phone cell and the text "null" does not appear.
-- [ ] AC7 Given the list is shown, when the doctor clicks the name in a row, then the patient record for that row's `patient_id` opens.
-- [ ] AC7b Given the list is shown, when the doctor clicks the phone or the date in a row, then nothing opens.
-- [ ] AC8 Given the endpoint returns patients B, A, C in that order, when the page opens, then the rows show B, A, C.
-- [ ] AC9 Given the list is shown, when the page opens, then the text "Follow-ups today" does not appear.
-- [ ] AC10 Given the response has `total` 5, when the page opens, then the heading reads "5 patients to call".
-- [ ] AC11 Given the list is shown, when the page opens, then the patient search box and the "add patient" form are still present.
-- [ ] AC12 Given an item whose name has 80 characters, when the page opens, then the name wraps inside its row and the page does not scroll horizontally.
-- [ ] AC13 Given an item with `days_overdue` 30, when the page opens, then the row shows "30 days overdue".
-- [ ] AC14 Given the response has `total` 0, when the page opens, then no "patients to call" heading is shown.
+- [x] AC1 Given the endpoint returns 3 items, when the patient list page opens, then the heading reads "3 patients to call" and 3 rows are shown.
+- [x] AC2 Given the endpoint returns 1 item, when the page opens, then the heading reads "1 patient to call".
+- [x] AC3 Given an item with name, phone, `follow_up_date` 2026-10-20 and `days_overdue` 7, when the page opens, then the row shows the name, the phone, "2026-10-20" and "7 days overdue".
+- [x] AC4 Given an item with `days_overdue` 0, when the page opens, then the row shows "Today" and not "0 days overdue".
+- [x] AC5a Given an item with `days_overdue` 1, when the page opens, then the row shows "1 day overdue".
+- [x] AC5b Given an item with `days_overdue` 2, when the page opens, then the row shows "2 days overdue".
+- [x] AC6 Given an item with `phone` null, when the page opens, then the row has an empty phone cell and the text "null" does not appear.
+- [x] AC7 Given the list is shown, when the doctor clicks the name in a row, then the patient record for that row's `patient_id` opens.
+- [x] AC7b Given the list is shown, when the doctor clicks the phone or the date in a row, then nothing opens.
+- [x] AC8 Given the endpoint returns patients B, A, C in that order, when the page opens, then the rows show B, A, C.
+- [x] AC9 Given the list is shown, when the page opens, then the text "Follow-ups today" does not appear.
+- [x] AC10 Given the response has `total` 5, when the page opens, then the heading reads "5 patients to call".
+- [x] AC11 Given the list is shown, when the page opens, then the patient search box and the "add patient" form are still present.
+- [x] AC12 Given an item whose name has 80 characters, when the page opens, then the name wraps inside its row and the page does not scroll horizontally.
+- [x] AC13 Given an item with `days_overdue` 30, when the page opens, then the row shows "30 days overdue".
+- [x] AC14 Given the response has `total` 0, when the page opens, then no "patients to call" heading is shown.
 
 ## Open questions
 | # | Question | Owner | Working default until answered |

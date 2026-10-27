@@ -56,30 +56,30 @@ Out:
 ## Acceptance Criteria
 All examples use `as_of=2026-10-27`.
 
-- [ ] AC1 Given patient A has a visit with `follow_up_date` 2026-10-27, when the endpoint is called, then A is listed with `days_overdue` 0.
-- [ ] AC2 Given patient A has a visit with `follow_up_date` 2026-10-20, when the endpoint is called, then A is listed with `days_overdue` 7.
-- [ ] AC3a Given `follow_up_date` 2026-09-27 (30 days overdue), when the endpoint is called, then the patient is listed with `days_overdue` 30.
-- [ ] AC3b Given `follow_up_date` 2026-09-26 (31 days overdue), when the endpoint is called, then the patient is not listed.
-- [ ] AC4 Given `follow_up_date` 2026-10-28, when the endpoint is called, then the patient is not listed.
-- [ ] AC5a Given a visit with `follow_up_date` 2026-10-20 and another non-deleted visit of the same patient on 2026-10-22, when the endpoint is called, then the patient is not listed.
-- [ ] AC5b Given the same data as AC5a but the 2026-10-22 visit is soft-deleted, when the endpoint is called, then the patient is listed.
-- [ ] AC5c Given a visit with `follow_up_date` 2026-10-20 and another non-deleted visit of the same patient on 2026-10-20, when the endpoint is called, then the patient is not listed.
-- [ ] AC5d Given a single visit on 2026-10-20 whose own `follow_up_date` is 2026-10-20, when the endpoint is called, then the patient is listed.
-- [ ] AC5e Given a visit with `follow_up_date` 2026-10-20 and another non-deleted visit of the same patient on 2026-10-19, when the endpoint is called, then the patient is listed.
-- [ ] AC6 Given the only visit with a `follow_up_date` is soft-deleted, when the endpoint is called, then the patient is not listed.
-- [ ] AC7 Given an archived patient with `follow_up_date` 2026-10-20, when the endpoint is called, then the patient is not listed.
-- [ ] AC8 Given patient A has visit 1 (visited 2026-10-01, follow-up 2026-10-20) and visit 2 (visited 2026-10-05, follow-up 2026-10-25), when the endpoint is called, then A is listed once, with `follow_up_date` 2026-10-25 and `days_overdue` 2.
-- [ ] AC9a Given A overdue 3 days, B overdue 10 days and C due today, when the endpoint is called, then the order is B, A, C.
-- [ ] AC9b Given patients "Ánh", "Bình" and "an", all overdue 5 days, when the endpoint is called, then the order is "Bình", "an", "Ánh".
-- [ ] AC9c Given two patients both named "An" with ids 1 and 2, both overdue 5 days, when the endpoint is called, then id 1 comes before id 2.
-- [ ] AC10 Given a due patient without a phone, when the endpoint is called, then the item is listed with `phone` null (not an empty string).
-- [ ] AC11 Given no patient is due, when the endpoint is called, then the status is 200 and the body is `{"total": 0, "items": []}`.
-- [ ] AC12 Given `as_of` is `banana`, `2026-02-30`, `27-10-2026` or empty, when the endpoint is called, then the status is 422.
-- [ ] AC13a Given no `as_of` and the clinic clock reads 2026-10-28 01:00 (2026-10-27 18:00 UTC), when the endpoint is called, then today is 2026-10-28 and a follow-up dated 2026-10-27 has `days_overdue` 1.
-- [ ] AC13b Given `as_of=2026-10-20` while the clock reads 2026-10-27, when the endpoint is called, then 2026-10-20 is used as today.
-- [ ] AC14 Given two due patients, when the endpoint is called, then `total` is 2 and each item has exactly `patient_id`, `full_name`, `phone`, `follow_up_date`, `days_overdue`.
-- [ ] AC15 Given the new endpoint exists, when `GET /visits/follow-ups?date=2026-10-27` is called, then it behaves as before this change.
-- [ ] AC16 Given a visit with no `follow_up_date`, when the endpoint is called, then that visit is ignored.
+- [x] AC1 Given patient A has a visit with `follow_up_date` 2026-10-27, when the endpoint is called, then A is listed with `days_overdue` 0.
+- [x] AC2 Given patient A has a visit with `follow_up_date` 2026-10-20, when the endpoint is called, then A is listed with `days_overdue` 7.
+- [x] AC3a Given `follow_up_date` 2026-09-27 (30 days overdue), when the endpoint is called, then the patient is listed with `days_overdue` 30.
+- [x] AC3b Given `follow_up_date` 2026-09-26 (31 days overdue), when the endpoint is called, then the patient is not listed.
+- [x] AC4 Given `follow_up_date` 2026-10-28, when the endpoint is called, then the patient is not listed.
+- [x] AC5a Given a visit with `follow_up_date` 2026-10-20 and another non-deleted visit of the same patient on 2026-10-22, when the endpoint is called, then the patient is not listed.
+- [x] AC5b Given the same data as AC5a but the 2026-10-22 visit is soft-deleted, when the endpoint is called, then the patient is listed.
+- [x] AC5c Given a visit with `follow_up_date` 2026-10-20 and another non-deleted visit of the same patient on 2026-10-20, when the endpoint is called, then the patient is not listed.
+- [x] AC5d Given a single visit on 2026-10-20 whose own `follow_up_date` is 2026-10-20, when the endpoint is called, then the patient is listed.
+- [x] AC5e Given a visit with `follow_up_date` 2026-10-20 and another non-deleted visit of the same patient on 2026-10-19, when the endpoint is called, then the patient is listed.
+- [x] AC6 Given the only visit with a `follow_up_date` is soft-deleted, when the endpoint is called, then the patient is not listed.
+- [x] AC7 Given an archived patient with `follow_up_date` 2026-10-20, when the endpoint is called, then the patient is not listed.
+- [x] AC8 Given patient A has visit 1 (visited 2026-10-01, follow-up 2026-10-20) and visit 2 (visited 2026-10-05, follow-up 2026-10-25), when the endpoint is called, then A is listed once, with `follow_up_date` 2026-10-25 and `days_overdue` 2.
+- [x] AC9a Given A overdue 3 days, B overdue 10 days and C due today, when the endpoint is called, then the order is B, A, C.
+- [x] AC9b Given patients "Ánh", "Bình" and "an", all overdue 5 days, when the endpoint is called, then the order is "Bình", "an", "Ánh".
+- [x] AC9c Given two patients both named "An" with ids 1 and 2, both overdue 5 days, when the endpoint is called, then id 1 comes before id 2.
+- [x] AC10 Given a due patient without a phone, when the endpoint is called, then the item is listed with `phone` null (not an empty string).
+- [x] AC11 Given no patient is due, when the endpoint is called, then the status is 200 and the body is `{"total": 0, "items": []}`.
+- [x] AC12 Given `as_of` is `banana`, `2026-02-30`, `27-10-2026` or empty, when the endpoint is called, then the status is 422.
+- [x] AC13a Given no `as_of` and the clinic clock reads 2026-10-28 01:00 (2026-10-27 18:00 UTC), when the endpoint is called, then today is 2026-10-28 and a follow-up dated 2026-10-27 has `days_overdue` 1.
+- [x] AC13b Given `as_of=2026-10-20` while the clock reads 2026-10-27, when the endpoint is called, then 2026-10-20 is used as today.
+- [x] AC14 Given two due patients, when the endpoint is called, then `total` is 2 and each item has exactly `patient_id`, `full_name`, `phone`, `follow_up_date`, `days_overdue`.
+- [x] AC15 Given the new endpoint exists, when `GET /visits/follow-ups?date=2026-10-27` is called, then it behaves as before this change.
+- [x] AC16 Given a visit with no `follow_up_date`, when the endpoint is called, then that visit is ignored.
 
 ## Open questions
 | # | Question | Owner | Working default until answered |
