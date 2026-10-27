@@ -132,5 +132,141 @@ test("T15-15 days_overdue 30 shows 30 days overdue", async () => {
 
 test("T15-16 total 0 shows no heading", async () => {
   await show([], 0);
-  expect(screen.queryByText(/to call/)).not.toBeInTheDocument();
+  expect(screen.queryByText(/^\d+ patients? to call$/)).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+});
+
+// ---- Ticket 16: loading, empty and error states ----
+
+const LOADING = "Loading follow-ups...";
+const EMPTY = "No patients to call";
+const ERROR = "Could not load follow-ups";
+const HEADING = /^\d+ patients? to call$/;
+
+function pending<T>() {
+  let resolve!: (v: T) => void;
+  let reject!: (e: Error) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+  return { promise, resolve, reject };
+}
+
+async function showFailing(error: Error) {
+  vi.mocked(api.getDueFollowUps).mockRejectedValueOnce(error);
+  await act(async () => {
+    render(<FollowUps onOpen={vi.fn()} />);
+  });
+}
+
+beforeEach(() => {
+  vi.mocked(api.getDueFollowUps).mockReset();
+});
+
+test("T16-01 pending request shows loading text, no heading, no rows", async () => {
+  vi.mocked(api.getDueFollowUps).mockReturnValue(pending<DueFollowUps>().promise);
+  await act(async () => {
+    render(<FollowUps onOpen={vi.fn()} />);
+  });
+  expect(screen.getByText(LOADING)).toBeInTheDocument();
+  expect(screen.queryByText(HEADING)).not.toBeInTheDocument();
+  expect(screen.queryAllByRole("row")).toHaveLength(0);
+  expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
+});
+
+test("T16-02 loading text goes away when the request succeeds with items", async () => {
+  const p = pending<DueFollowUps>();
+  vi.mocked(api.getDueFollowUps).mockReturnValue(p.promise);
+  await act(async () => {
+    render(<FollowUps onOpen={vi.fn()} />);
+  });
+  expect(screen.getByText(LOADING)).toBeInTheDocument();
+  await act(async () => {
+    p.resolve({ total: 1, items: [item()] });
+  });
+  expect(screen.queryByText(LOADING)).not.toBeInTheDocument();
+  expect(screen.getByText("1 patient to call")).toBeInTheDocument();
+  expect(bodyRows()).toHaveLength(1);
+});
+
+test("T16-03 total 0 shows the empty text and the section stays visible", async () => {
+  await show([], 0);
+  expect(screen.getByText(EMPTY)).toBeInTheDocument();
+  expect(screen.queryByText(LOADING)).not.toBeInTheDocument();
+  expect(screen.getByText(EMPTY).closest("section")).not.toBeNull();
+});
+
+test("T16-04 total 0 shows no rows and no heading", async () => {
+  await show([], 0);
+  expect(screen.queryAllByRole("row")).toHaveLength(0);
+  expect(screen.queryByText(HEADING)).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading")).not.toBeInTheDocument();
+});
+
+test("T16-05 a 500 shows the error text and Try again", async () => {
+  await showFailing(new Error("Request failed: 500"));
+  expect(screen.getByText(ERROR)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+  expect(screen.queryByText(LOADING)).not.toBeInTheDocument();
+});
+
+test("T16-06 a 422 shows the same error text and Try again", async () => {
+  await showFailing(new Error("Request failed: 422"));
+  expect(screen.getByText(ERROR)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+});
+
+test("T16-07 a network failure shows the same error text and Try again", async () => {
+  await showFailing(new TypeError("Failed to fetch"));
+  expect(screen.getByText(ERROR)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+});
+
+test("T16-08 Try again succeeds with 2 items: list shows, error text gone", async () => {
+  await showFailing(new Error("Request failed: 500"));
+  vi.mocked(api.getDueFollowUps).mockResolvedValueOnce({
+    total: 2,
+    items: [item({ patient_id: 1 }), item({ patient_id: 2, full_name: "Tran Thi B" })],
+  });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+  });
+  expect(screen.queryByText(ERROR)).not.toBeInTheDocument();
+  expect(screen.getByText("2 patients to call")).toBeInTheDocument();
+  expect(bodyRows()).toHaveLength(2);
+});
+
+test("T16-09 Try again succeeds with total 0: shows the empty text", async () => {
+  await showFailing(new Error("Request failed: 500"));
+  vi.mocked(api.getDueFollowUps).mockResolvedValueOnce({ total: 0, items: [] });
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+  });
+  expect(screen.getByText(EMPTY)).toBeInTheDocument();
+  expect(screen.queryByText(ERROR)).not.toBeInTheDocument();
+});
+
+test("T16-10 Try again in progress shows loading and a second click sends no second request", async () => {
+  await showFailing(new Error("Request failed: 500"));
+  vi.mocked(api.getDueFollowUps).mockReturnValueOnce(pending<DueFollowUps>().promise);
+  const button = screen.getByRole("button", { name: "Try again" });
+  await act(async () => {
+    fireEvent.click(button);
+    fireEvent.click(button); // same element, before any re-render
+  });
+  expect(screen.getByText(LOADING)).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
+  expect(api.getDueFollowUps).toHaveBeenCalledTimes(2); // mount + one retry
+});
+
+test("T16-11 Try again fails again: error text and Try again are back", async () => {
+  await showFailing(new Error("Request failed: 500"));
+  vi.mocked(api.getDueFollowUps).mockRejectedValueOnce(new Error("Request failed: 500"));
+  await act(async () => {
+    fireEvent.click(screen.getByRole("button", { name: "Try again" }));
+  });
+  expect(screen.getByText(ERROR)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+  expect(screen.queryByText(LOADING)).not.toBeInTheDocument();
 });
