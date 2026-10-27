@@ -33,20 +33,20 @@ Out:
 - Any change to the backend.
 
 ## Acceptance Criteria
-- [ ] AC1a Given the request is pending, when the page opens, then "Loading follow-ups..." is shown, with no heading and no rows.
-- [ ] AC1b Given the request is pending, when it succeeds with items, then the loading text disappears and the list shows.
-- [ ] AC2a Given the response has `total` 0, when the page opens, then "No patients to call" is shown and the section stays visible.
-- [ ] AC2b Given the response has `total` 0, when the page opens, then no rows and no "patients to call" heading are shown.
-- [ ] AC3a Given the endpoint answers 500, when the page opens, then "Could not load follow-ups" and a "Try again" button are shown.
-- [ ] AC3b Given the endpoint answers 422, when the page opens, then "Could not load follow-ups" and a "Try again" button are shown.
-- [ ] AC3c Given the request fails with a network error, when the page opens, then "Could not load follow-ups" and a "Try again" button are shown.
-- [ ] AC4a Given the error state, when the doctor clicks "Try again" and the request succeeds with items, then the list shows and the error text is gone.
-- [ ] AC4b Given the error state, when the doctor clicks "Try again" and the response has `total` 0, then "No patients to call" is shown.
-- [ ] AC4c Given the error state, when the doctor clicks "Try again", then "Loading follow-ups..." is shown while the request is pending and a second click cannot send a second request.
-- [ ] AC4d Given the error state, when the doctor clicks "Try again" and the request fails again, then the error message and "Try again" are shown again.
-- [ ] AC5 Given the error state, when the doctor types in the search box or opens the "add patient" form, then both work.
-- [ ] AC6 Given the endpoint answers 500 with a body containing a patient name, when the page opens, then the message is only "Could not load follow-ups" and the name is not on the page.
-- [ ] AC7 Given the same 500 response as AC6, when the page opens, then nothing from the response body is written to the console or logs.
+- [x] AC1a Given the request is pending, when the page opens, then "Loading follow-ups..." is shown, with no heading and no rows.
+- [x] AC1b Given the request is pending, when it succeeds with items, then the loading text disappears and the list shows.
+- [x] AC2a Given the response has `total` 0, when the page opens, then "No patients to call" is shown and the section stays visible.
+- [x] AC2b Given the response has `total` 0, when the page opens, then no rows and no "patients to call" heading are shown.
+- [x] AC3a Given the endpoint answers 500, when the page opens, then "Could not load follow-ups" and a "Try again" button are shown.
+- [x] AC3b Given the endpoint answers 422, when the page opens, then "Could not load follow-ups" and a "Try again" button are shown.
+- [x] AC3c Given the request fails with a network error, when the page opens, then "Could not load follow-ups" and a "Try again" button are shown.
+- [x] AC4a Given the error state, when the doctor clicks "Try again" and the request succeeds with items, then the list shows and the error text is gone.
+- [x] AC4b Given the error state, when the doctor clicks "Try again" and the response has `total` 0, then "No patients to call" is shown.
+- [x] AC4c Given the error state, when the doctor clicks "Try again", then "Loading follow-ups..." is shown while the request is pending and a second click cannot send a second request.
+- [x] AC4d Given the error state, when the doctor clicks "Try again" and the request fails again, then the error message and "Try again" are shown again.
+- [x] AC5 Given the error state, when the doctor types in the search box or opens the "add patient" form, then both work.
+- [x] AC6 Given the endpoint answers 500 with a body containing a patient name, when the page opens, then the message is only "Could not load follow-ups" and the name is not on the page.
+- [x] AC7 Given the same 500 response as AC6, when the page opens, then nothing from the response body is written to the console or logs.
 
 ## Open questions
 | # | Question | Owner | Working default until answered |

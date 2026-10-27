@@ -53,6 +53,19 @@ export interface FollowUp {
   follow_up_date: string;
 }
 
+export interface DueFollowUp {
+  patient_id: number;
+  full_name: string;
+  phone: string | null;
+  follow_up_date: string;
+  days_overdue: number;
+}
+
+export interface DueFollowUps {
+  total: number;
+  items: DueFollowUp[];
+}
+
 export interface Revenue {
   visit_count: number;
   collected: number;

@@ -1,5 +1,9 @@
 # Plan: ticket 14, due follow-ups report endpoint
 
+Status: draft for approval (Day 13). Branch `feat/37-due-follow-ups-endpoint`, issue #37. Revised against the rewritten ticket (AC1 to AC16).
+
+Working order: QA translates the matrix rows `T14-*` into failing pytest tests first (one commit, red, test names carry the matrix id). Dev then makes them green. Two commits at least: `test:` then `feat:`.
+
 Source: `docs/tickets/14-clinic-app-due-follow-ups-endpoint.md` plus clinic-app code only.
 Run tests with `make test-backend` from `clinic-app/`.
 
@@ -27,10 +31,11 @@ Each step: write the failing test, see it fail, minimal code, green. Tests use `
 8. Null phone is listed with `phone` null (AC10).
 9. Newer-visit rule: a non-deleted visit with `visited_at` date >= follow_up_date drops the candidate (same day counts, per the ticket assumption). The carrying visit does not count against itself (exclude by visit id). A soft-deleted newer visit does not drop it (AC5).
 10. One item per patient, latest `follow_up_date` wins (AC8). Candidates are filtered first (steps 4 to 9), then deduped.
-11. Order: `days_overdue` desc, then `full_name` asc (AC9). Add `patient_id` as a last tie-break for determinism.
-12. Invalid `as_of` (e.g. `2026-13-45`, `abc`) returns 422 (AC12).
-13. No `as_of`: freeze time at a clinic-time instant whose UTC date differs from the clinic date (e.g. 2026-10-26T18:00Z is 2026-10-27 01:00 in Asia/Ho_Chi_Minh), check `days_overdue` and listing are computed from `clock.today()` (AC13). Use `clock.today()`, never `datetime.now()`.
-14. Final: `make test-backend` fully green, including old `/visits/follow-ups` tests.
+11. Order: `days_overdue` desc, then `full_name` asc by the SQLite default comparison, then `patient_id` asc (AC9a to AC9c). Test names `"Ánh", "Bình", "an"` expect `Bình, an, Ánh`. Do the sort in SQL (`ORDER BY`) or in Python with plain string comparison, not locale-aware sorting.
+12. Invalid `as_of` returns 422 for `banana`, `2026-02-30`, `27-10-2026` and the empty value (AC12). Only `YYYY-MM-DD` is accepted (BR7); check that `as_of=` is rejected and not treated as missing.
+13. No `as_of`: freeze time at a clinic-time instant whose UTC date differs from the clinic date (e.g. 2026-10-26T18:00Z is 2026-10-27 01:00 in Asia/Ho_Chi_Minh), check `days_overdue` and listing are computed from `clock.today()` (AC13a); also an explicit `as_of` wins over the clock (AC13b). Use `clock.today()`, never `datetime.now()`.
+14. Response shape: `total` equals the item count and each item has exactly the five fields (AC14). Visit with no `follow_up_date` is ignored (AC16).
+15. Final: `make test-backend` fully green, including the old `/visits/follow-ups` tests unchanged (AC15).
 
 Implementation sketch: select candidate Visit + Patient (follow_up_date set, `follow_up_date` between `as_of-30d` and `as_of`, `deleted_at` null, patient not archived). Drop a candidate if a different non-deleted visit of the same patient has `visited_at >= datetime.combine(follow_up_date, time.min)`, using a NOT EXISTS subquery. Dedupe in Python by patient (max follow_up_date). Sort in Python or SQL.
 
