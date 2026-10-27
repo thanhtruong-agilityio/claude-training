@@ -164,8 +164,9 @@ def test_t14_14_unarchived_patient_is_listed_again(client, patient, make_visit):
 
 
 def test_t14_15_one_item_per_patient_latest_follow_up_wins(client, patient, make_visit):
-    make_visit(patient["id"], visited_at="2026-10-01T09:00:00", follow_up_date="2026-10-20")
-    make_visit(patient["id"], visited_at="2026-10-05T09:00:00", follow_up_date="2026-10-25")
+    # The later follow-up date is created first, so "last row wins" cannot pass by luck.
+    make_visit(patient["id"], visited_at="2026-10-01T09:00:00", follow_up_date="2026-10-25")
+    make_visit(patient["id"], visited_at="2026-10-05T09:00:00", follow_up_date="2026-10-20")
     body = _due(client).json()
     assert body["total"] == 1
     assert body["items"][0]["follow_up_date"] == "2026-10-25"
@@ -247,6 +248,9 @@ def test_t14_23_patients_exist_but_none_due(client, patient, make_visit):
         ("t14_25_impossible", "2026-02-30"),
         ("t14_26_wrong_format", "27-10-2026"),
         ("t14_27_empty", ""),
+        # date.fromisoformat accepts these on Python 3.11+; only the format check rejects them.
+        ("t14_27_compact", "20261027"),
+        ("t14_27_iso_week", "2026-W44-2"),
     ],
 )
 def test_t14_24_to_27_invalid_as_of_is_422(client, case, value):
