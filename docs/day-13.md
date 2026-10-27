@@ -34,8 +34,8 @@
 | Artifact | Where |
 |---|---|
 | Plan, ticket 14 | [docs/plans/2026-10-27-follow-up-dashboard-t14-plan.md](plans/2026-10-27-follow-up-dashboard-t14-plan.md) |
-| Plan, ticket 15 | [docs/plans/2026-10-27-follow-up-dashboard-t15-plan.md](plans/2026-10-27-follow-up-dashboard-t15-plan.md) (on the `feat/38-…` branch) |
-| Plan, ticket 16 | on the `feat/39-due-follow-ups-states` branch (draft, not approved yet) |
+| Plan, ticket 15 | [docs/plans/2026-10-27-follow-up-dashboard-t15-plan.md](plans/2026-10-27-follow-up-dashboard-t15-plan.md) |
+| Plan, ticket 16 | draft on the `feat/39-due-follow-ups-states` branch, not approved yet, no link |
 | PRs | #42 (BE endpoint, merged), #43 (FE list, merged) |
 | Browser check screenshots | [wide](../exercises/day-13-due-follow-ups-wide.png), [narrow](../exercises/day-13-due-follow-ups-narrow.png) |
 | GitLab sync of Day 12 | branch `sync/day-12` pushed; the merge request into GitLab `main` is opened and merged by hand (not confirmed) |
