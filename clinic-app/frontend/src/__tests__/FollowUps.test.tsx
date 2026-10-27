@@ -133,6 +133,7 @@ test("T15-15 days_overdue 30 shows 30 days overdue", async () => {
 test("T15-16 total 0 shows no heading", async () => {
   await show([], 0);
   expect(screen.queryByText(/^\d+ patients? to call$/)).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading")).not.toBeInTheDocument();
 });
 
 // ---- Ticket 16: loading, empty and error states ----
@@ -171,6 +172,7 @@ test("T16-01 pending request shows loading text, no heading, no rows", async () 
   expect(screen.getByText(LOADING)).toBeInTheDocument();
   expect(screen.queryByText(HEADING)).not.toBeInTheDocument();
   expect(screen.queryAllByRole("row")).toHaveLength(0);
+  expect(screen.queryByRole("button", { name: "Try again" })).not.toBeInTheDocument();
 });
 
 test("T16-02 loading text goes away when the request succeeds with items", async () => {
@@ -199,6 +201,7 @@ test("T16-04 total 0 shows no rows and no heading", async () => {
   await show([], 0);
   expect(screen.queryAllByRole("row")).toHaveLength(0);
   expect(screen.queryByText(HEADING)).not.toBeInTheDocument();
+  expect(screen.queryByRole("heading")).not.toBeInTheDocument();
 });
 
 test("T16-05 a 500 shows the error text and Try again", async () => {

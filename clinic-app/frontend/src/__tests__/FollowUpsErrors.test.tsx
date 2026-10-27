@@ -35,16 +35,33 @@ test("T16-13 a 500 with a patient name in the body shows only the fixed message"
   expect(document.body.textContent).not.toContain(SECRET_NAME);
 });
 
-test("T16-14 nothing from the response body is written to the console", async () => {
-  const spies = [
-    vi.spyOn(console, "log").mockImplementation(() => {}),
-    vi.spyOn(console, "error").mockImplementation(() => {}),
-    vi.spyOn(console, "warn").mockImplementation(() => {}),
-  ];
+test("T16-14 the error state writes nothing to the console", async () => {
+  // Any console call fails the test: logging the error object would pass a body
+  // check (api.ts only puts the status in the message, and JSON.stringify(Error) is {}),
+  // so the contract is checked directly.
+  const spies = (["log", "error", "warn", "info", "debug"] as const).map((m) =>
+    vi.spyOn(console, m).mockImplementation(() => {}),
+  );
   await showOn500();
   // The page must have reached the error state, otherwise the check proves nothing.
   expect(screen.getByText("Could not load follow-ups")).toBeInTheDocument();
   for (const spy of spies) {
-    expect(JSON.stringify(spy.mock.calls)).not.toContain(SECRET_NAME);
+    expect(spy).not.toHaveBeenCalled();
   }
+});
+
+test("T16-06b a 422 through the real api.ts shows the same error state", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn().mockResolvedValue(
+      new Response(JSON.stringify({ detail: `bad request for ${SECRET_NAME}` }), {
+        status: 422,
+        headers: { "Content-Type": "application/json" },
+      }),
+    ),
+  );
+  await showOn500();
+  expect(screen.getByText("Could not load follow-ups")).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+  expect(document.body.textContent).not.toContain(SECRET_NAME);
 });
