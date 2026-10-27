@@ -28,7 +28,8 @@
 | T14-16 | AC8 | Two patients, one due visit each | A and B due | Two items | H |
 | T14-17 | AC9 | Order by days overdue | A overdue 3, B overdue 10, C due today | Order B, A, C | H |
 | T14-18 | AC9 | Tie on days overdue | "Binh" and "An", both overdue 5 | Order An, Binh | H |
-| T14-19 | AC9 | Tie with accents and case | "Ánh", "Bình", "an" overdue 5 | Order is defined by the ticket (see Q3) | E |
+| T14-19 | AC9 | Tie with accents and case | "Ánh", "Bình", "an" overdue 5 | Plain text comparison: "Bình", "an", "Ánh" (uppercase ASCII before lowercase before accented letters) | E |
+| T14-33 | AC9 | Same name, same overdue days | Two patients named "An", ids 1 and 2, overdue 5 | Order by `patient_id`: 1 then 2 | E |
 | T14-20 | AC10 | Patient without phone | Patient with no phone, due | Listed, `phone` null, not empty string | H |
 | T14-21 | AC11 | No due patients | Empty database | 200, `{"total": 0, "items": []}` | H |
 | T14-22 | AC11 | Only non-due data | Patients exist but none due | 200, `total` 0, empty `items` | H |
@@ -95,7 +96,7 @@ These are questions for the BA. The expected results above that depend on them a
 |---|---|---|---|
 | Q1 | 14 / AC5 | The client said "after the follow-up date" but the ticket says "on or after". A patient who comes back exactly on the date is dropped. The ticket marks this as an assumption, but the client has not confirmed. | T14-07 passes or fails depending on the answer. |
 | Q2 | 14 / AC8 | "Two due visits" is not defined when the earlier visit's follow-up is already satisfied by the later visit. | T14-15: visit 2 happened after visit 1's date, so visit 1 is satisfied; the example only works because of that. Say it explicitly. |
-| Q3 | 14 / AC9 | "Name ascending" does not say how to compare accents and upper or lower case. Patient names are Vietnamese. | T14-19: plain code-point order puts "Ánh" after "Bình". The doctor probably expects "Ánh" first. |
+| Q3 | 14 / AC9 | "Name ascending" did not say how to compare accents and upper or lower case. **Resolved:** plain text comparison, no folding; ties by `patient_id`. Ticket 14 AC9 now says so. | T14-19, T14-33. |
 | Q4 | 14 / AC12 | "Not a valid date" does not cover the empty value (`as_of=`) or non-ISO formats. | T14-25 and T14-26 have no single expected result. |
 | Q5 | 15 / AC3 | The format of the follow-up date is not specified (2026-10-20, 20/10/2026, ...). | The test cannot assert the text. |
 | Q6 | 15 / Scope | The heading uses `total`, but nothing says what happens if `total` and the number of items differ. | Low risk; confirm the heading reads `total`. |

@@ -13,6 +13,7 @@ The doctor wants to know which patients need to come back. Today `GET /visits/fo
 - Overdue is cut off at 30 days (Q3).
 - One row per patient, most recent follow-up date wins (Q7).
 - Sorted most overdue first, then today (Q6).
+- Names are compared with a plain text comparison; no accent or case folding (follow-up to Q6, answered during test planning).
 - Archived patients stay hidden (Q10).
 - Patients without a phone are included (Q12).
 
@@ -50,7 +51,7 @@ Out:
 - [ ] AC6 Given a soft-deleted visit with a follow-up date, then it is ignored.
 - [ ] AC7 Given an archived patient, then the patient is not listed.
 - [ ] AC8 Given a patient with two due visits, then one item is returned, with the later follow-up date.
-- [ ] AC9 Given patients with different overdue days, then the most overdue is first. Given the same overdue days, then the order is by name ascending.
+- [ ] AC9 Given patients with different overdue days, then the most overdue is first. Given the same overdue days, then the order is by `full_name` ascending using a plain text comparison (the database default, as the current follow-ups endpoint does): case-sensitive, accents not folded. Given the same name, then the order is by `patient_id` ascending.
 - [ ] AC10 Given a patient without a phone, then the item is listed with `phone` null.
 - [ ] AC11 Given no due patients, then the response is `{"total": 0, "items": []}` with status 200.
 - [ ] AC12 Given `as_of` is not a valid date, then the status is 422.
