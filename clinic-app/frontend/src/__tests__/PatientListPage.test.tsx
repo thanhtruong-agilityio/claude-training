@@ -94,6 +94,7 @@ test("T15-13 shows the due list together with the search box and add-patient for
   });
   render(<PatientListPage onOpen={() => {}} onRevenue={() => {}} />);
   expect(await screen.findByText("1 patient to call")).toBeInTheDocument();
+  expect(screen.queryByText("Follow-ups today")).not.toBeInTheDocument();
   expect(screen.getByLabelText("Search")).toBeInTheDocument();
   expect(screen.getByLabelText("Full name")).toBeInTheDocument();
   expect(screen.getByText("Add patient")).toBeInTheDocument();

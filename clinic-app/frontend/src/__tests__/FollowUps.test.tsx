@@ -82,7 +82,7 @@ test("T15-08 clicking the name of the second row opens that patient", async () =
     item({ patient_id: 11, full_name: "Nguyen Van A" }),
     item({ patient_id: 22, full_name: "Tran Thi B" }),
   ]);
-  fireEvent.click(screen.getByText("Tran Thi B"));
+  fireEvent.click(screen.getByRole("link", { name: "Tran Thi B" }));
   expect(onOpen).toHaveBeenCalledTimes(1);
   expect(onOpen).toHaveBeenCalledWith(22);
 });
@@ -96,9 +96,10 @@ test("T15-09 clicking the phone or the date opens nothing", async () => {
 
 test("T15-10 keeps the order returned by the API", async () => {
   await show([
-    item({ patient_id: 2, full_name: "Bui Thi B" }),
-    item({ patient_id: 1, full_name: "An Van A" }),
-    item({ patient_id: 3, full_name: "Cao Van C" }),
+    // Not sorted by name, id, days overdue or date, so any sort in the component fails.
+    item({ patient_id: 2, full_name: "Bui Thi B", days_overdue: 3, follow_up_date: "2026-10-24" }),
+    item({ patient_id: 1, full_name: "An Van A", days_overdue: 9, follow_up_date: "2026-10-18" }),
+    item({ patient_id: 3, full_name: "Cao Van C", days_overdue: 1, follow_up_date: "2026-10-26" }),
   ]);
   const names = bodyRows().map((r) => within(r).getAllByRole("cell")[0].textContent);
   expect(names).toEqual(["Bui Thi B", "An Van A", "Cao Van C"]);
