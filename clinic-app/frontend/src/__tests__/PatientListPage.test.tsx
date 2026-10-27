@@ -22,7 +22,7 @@ const patients = [
 
 beforeEach(() => {
   vi.mocked(api.listPatients).mockResolvedValue(patients);
-  vi.mocked(api.listFollowUps).mockResolvedValue([]);
+  vi.mocked(api.getDueFollowUps).mockResolvedValue({ total: 0, items: [] });
   vi.mocked(api.createPatient).mockReset();
 });
 
@@ -77,4 +77,24 @@ test("adds a patient with trimmed name and reloads", async () => {
   await waitFor(() =>
     expect(api.createPatient).toHaveBeenCalledWith({ full_name: "Tran B", phone: "0911" }),
   );
+});
+
+test("T15-13 shows the due list together with the search box and add-patient form", async () => {
+  vi.mocked(api.getDueFollowUps).mockResolvedValue({
+    total: 1,
+    items: [
+      {
+        patient_id: 5,
+        full_name: "Pham Thi D",
+        phone: null,
+        follow_up_date: "2026-10-20",
+        days_overdue: 7,
+      },
+    ],
+  });
+  render(<PatientListPage onOpen={() => {}} onRevenue={() => {}} />);
+  expect(await screen.findByText("1 patient to call")).toBeInTheDocument();
+  expect(screen.getByLabelText("Search")).toBeInTheDocument();
+  expect(screen.getByLabelText("Full name")).toBeInTheDocument();
+  expect(screen.getByText("Add patient")).toBeInTheDocument();
 });
