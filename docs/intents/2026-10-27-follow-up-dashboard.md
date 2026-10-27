@@ -2,7 +2,6 @@
 
 - Author: ThanhTruong (playing the client)
 - Date: 2026-10-27
-- Branch: `training/day-12`
 - App: clinic-app
 - Status: draft (written by the client; the vagueness is on purpose)
 

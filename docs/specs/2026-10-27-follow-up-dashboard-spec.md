@@ -3,7 +3,7 @@
 - Source: [intent](../intents/2026-10-27-follow-up-dashboard.md)
 - Author: ThanhTruong (playing the BA)
 - Date: 2026-10-27
-- Status: draft, waiting for client answers (section 5)
+- Status: client answered (section 5); next is the ticket pack
 
 ## 1. Intent in one line
 
@@ -37,33 +37,48 @@ R1 is the only requirement the client stated. R2 to R4 are inferred and need con
 | G5 | Row shows only name and phone. | The doctor may need diagnosis, last visit date or days overdue to prioritize. |
 | G6 | The list is a block on the patient list page, not a dashboard. | "Dashboard" is not defined: a page, a block, counts, a chart? |
 
-## 5. Flagged concerns and open questions for the client
+## 5. Open questions and client answers
 
-Not answered here. Answers go into the tickets.
+Answers are from the client. "Assumption" marks a question the client did not decide; the BA proceeds on that assumption.
 
 **Meaning of "need to come back"**
-1. Does it mean follow-ups due today, overdue, upcoming, or all of these? If upcoming, how far ahead (a week, a month)?
-2. When does a follow-up stop being due: when the patient has a newer visit, when the doctor marks it done, or when the date passes?
-3. Should a very old overdue follow-up (for example 6 months) still show, or is there a cutoff?
+1. Does it mean follow-ups due today, overdue, upcoming, or all of these? If upcoming, how far ahead?
+   - **Answer:** today and overdue. Upcoming is not needed for the first version.
+2. When does a follow-up stop being due?
+   - **Answer:** when the patient has a newer visit after the follow-up date. No "done" button for now (see 8).
+3. Should a very old overdue follow-up still show?
+   - **Answer:** cut off at 30 days overdue.
 
 **What the dashboard shows**
-4. What does "dashboard" mean here: a list, summary counts, a calendar, or a mix? Is a plain sorted list enough for the first version?
-5. Which fields per patient: name and phone only, or also diagnosis, last visit date, days overdue?
-6. Sort order: by date, by days overdue, or by name?
-7. One row per patient or one row per visit?
+4. What does "dashboard" mean: a list, summary counts, a calendar, or a mix?
+   - **Answer:** a simple list, plus one total at the top (for example "5 patients to call"). No calendar or chart.
+5. Which fields per patient?
+   - **Answer:** name, phone, follow-up date, days overdue. Diagnosis is not needed.
+6. Sort order?
+   - **Answer:** most overdue first, then today.
+7. One row per patient or per visit?
+   - **Answer:** one row per patient. If a patient has several matches, use the most recent follow-up date.
 
 **Actions**
-8. Should the doctor be able to mark a patient as contacted or done from this screen? (This adds data that does not exist today.)
-9. Should the screen link to the patient record only, or also to creating a new visit?
+8. Should the doctor be able to mark a patient as contacted or done from this screen?
+   - **Answer:** no, not in this version. Out of scope.
+9. Link to the patient record only, or also to creating a new visit?
+   - **Answer:** the patient record only, as the current list does.
 
 **Rules and edge cases**
-10. Archived patients: stay hidden (current rule), or shown with a marker?
-11. Is the follow-up date always entered by the doctor in the visit form, or should the app suggest it?
+10. Archived patients: hidden or shown with a marker?
+    - **Answer:** hidden, as today.
+11. Is the follow-up date always entered by the doctor, or should the app suggest it?
+    - **Assumption (client undecided):** the doctor keeps entering it by hand in the visit form, as today.
 12. Patients with no phone number: show them anyway?
+    - **Answer:** yes, with an empty phone cell.
 
 **Delivery**
-13. What does "as soon as possible" mean: before the Day 15 demo? Which part must be there first if time is short?
-14. Anything explicitly out of scope (export, printing, SMS or email reminders)? The base design already lists SMS reminders as out of scope.
+13. What does "as soon as possible" mean? Which part must be there first if time is short?
+    - **Answer:** within two weeks. If time is short, the list of overdue and today patients comes first; the total at the top comes last.
+14. Anything explicitly out of scope?
+    - **Answer:** SMS and email reminders are out (already out in the base design).
+    - **Assumption (client undecided):** export and printing are out of scope too.
 
 ## 6. Constraints from the repo
 
@@ -75,7 +90,7 @@ Not answered here. Answers go into the tickets.
 
 ## 7. Next steps
 
-1. Client answers section 5 in this file.
+1. Client answered section 5 (done).
 2. BA splits the spec into a ticket pack (one ticket per PR), each with acceptance criteria and the client's answers.
 3. QA drafts the test matrix from the acceptance criteria.
 4. Dev produces a plan for the first ticket without asking questions outside the ticket.
