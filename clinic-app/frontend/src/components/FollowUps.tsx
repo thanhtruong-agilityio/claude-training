@@ -1,6 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getDueFollowUps } from "../api";
 import type { DueFollowUps } from "../types";
+
+const TEXT = {
+  loading: "Loading follow-ups...",
+  empty: "No patients to call",
+  error: "Could not load follow-ups",
+  retry: "Try again",
+};
 
 function overdueLabel(days: number): string {
   if (days === 0) return "Today";
@@ -9,13 +16,41 @@ function overdueLabel(days: number): string {
 }
 
 export default function FollowUps({ onOpen }: { onOpen: (patientId: number) => void }) {
+  const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [data, setData] = useState<DueFollowUps | null>(null);
+  const inFlight = useRef(false);
 
-  useEffect(() => {
-    getDueFollowUps().then(setData);
+  const load = useCallback(() => {
+    if (inFlight.current) return;
+    inFlight.current = true;
+    setStatus("loading");
+    getDueFollowUps()
+      .then((d) => {
+        setData(d);
+        setStatus("ready");
+      })
+      // The error is ignored on purpose: it must never be shown or logged.
+      .catch(() => setStatus("error"))
+      .finally(() => {
+        inFlight.current = false;
+      });
   }, []);
 
-  if (!data || data.total === 0) return null;
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  if (status === "loading") return <section>{TEXT.loading}</section>;
+  if (status === "error" || !data)
+    return (
+      <section>
+        <p>{TEXT.error}</p>
+        <button type="button" onClick={load}>
+          {TEXT.retry}
+        </button>
+      </section>
+    );
+  if (data.total === 0) return <section>{TEXT.empty}</section>;
 
   return (
     <section>
