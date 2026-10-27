@@ -85,6 +85,7 @@ All examples use `as_of=2026-10-27`.
 | # | Question | Owner | Working default until answered |
 |---|---|---|---|
 | OQ1 | Does a patient who comes back on the follow-up date itself count as having come back? The client said "after". | Client | Yes (AC5c) |
+| OQ2 | When `as_of` is a past date, should a visit after `as_of` still count as the patient having come back? BR3 has no upper bound, so today it does. This matters only if the endpoint is used to ask what was due on a given day. | BA, then client | Yes (BR3 as written) |
 
 ## Technical Notes
 - Add the route in `backend/app/routers/reports.py` and the response models in `backend/app/models.py`. Use `clock.today()`, never `datetime.now()`.
