@@ -50,17 +50,20 @@ Implementation sketch: select candidate Visit + Patient (follow_up_date set, `fo
 |---|---|
 | AC1 | step 2, today listed, days_overdue 0 |
 | AC2 | step 3, 7 days overdue |
-| AC3 | step 4, day 30 listed and day 31 not |
+| AC3a, AC3b | step 4, day 30 listed and day 31 not |
 | AC4 | step 5, future not listed |
-| AC5 | step 9, newer visit (including same day) drops; soft-deleted newer visit does not; carrying visit does not drop itself |
+| AC5a to AC5e | step 9, newer visit drops (after, same day); soft-deleted newer visit does not; carrying visit does not drop itself; visit the day before does not drop |
 | AC6 | step 6, deleted visit ignored |
 | AC7 | step 7, archived hidden |
 | AC8 | step 10, two due visits give one item with later date |
-| AC9 | step 11, most overdue first, same days by name asc |
+| AC9a to AC9c | step 11, most overdue first, same days by name (plain comparison), same name by `patient_id` |
 | AC10 | step 8, phone null |
 | AC11 | step 1, empty response and 200 |
-| AC12 | step 12, 422 for invalid `as_of` |
-| AC13 | step 13, time frozen across the UTC/clinic date boundary |
+| AC12 | step 12, 422 for `banana`, `2026-02-30`, `27-10-2026`, empty |
+| AC13a, AC13b | step 13, time frozen across the UTC/clinic date boundary; explicit `as_of` wins |
+| AC14 | step 2, item has exactly the five fields; `total` equals item count |
+| AC15 | step 14, existing `/visits/follow-ups` tests stay green |
+| AC16 | step 2 setup, visit without `follow_up_date` ignored |
 
 ## Ticket questions (zero-question test)
 

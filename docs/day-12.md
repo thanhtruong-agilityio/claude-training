@@ -35,7 +35,7 @@ Artifacts (feature: follow-up dashboard for the doctor):
 | Spec + 14 client answers | [docs/specs/2026-10-27-follow-up-dashboard-spec.md](specs/2026-10-27-follow-up-dashboard-spec.md) |
 | Tickets 14, 15, 16 | [14](tickets/14-clinic-app-due-follow-ups-endpoint.md) · [15](tickets/15-clinic-app-due-follow-ups-list.md) · [16](tickets/16-clinic-app-due-follow-ups-states.md) |
 | GitHub issues | #37 (BE), #38 (FE list), #39 (FE states) |
-| Test matrix (62 rows) | [docs/specs/2026-10-27-follow-up-dashboard-test-matrix.md](specs/2026-10-27-follow-up-dashboard-test-matrix.md) |
+| Test matrix (63 rows) | [docs/specs/2026-10-27-follow-up-dashboard-test-matrix.md](specs/2026-10-27-follow-up-dashboard-test-matrix.md) |
 | Plan for ticket 14 | [docs/plans/2026-10-27-follow-up-dashboard-t14-plan.md](plans/2026-10-27-follow-up-dashboard-t14-plan.md) |
 
 ---
@@ -62,7 +62,7 @@ Artifacts (feature: follow-up dashboard for the doctor):
 - Split into 3 small tickets (BE endpoint, FE list, FE states), one PR each
 
 **What the QA step found (tickets only, no code)**
-- 62 rows, every AC covered, plus timezone, archived, empty, deleted-then-restored, 30/31-day boundary
+- 63 rows, every AC covered, plus timezone, archived, empty, deleted-then-restored, 30/31-day boundary
 - 9 ambiguities in the tickets. Most useful: name ordering with Vietnamese accents ("Ánh" sorts after "Bình" with a plain comparison)
 - Resolved by the client: plain text comparison, ties by `patient_id`; ticket 14 AC9 and issue #37 updated
 
@@ -75,7 +75,7 @@ Artifacts (feature: follow-up dashboard for the doctor):
 |---|---|
 | Questions from the dev | 0 (1 should have been asked) |
 | Ambiguities found by QA | 9 |
-| Spec changes after the plan | 1 (AC9 ordering) |
+| Spec changes after the plan | 1 (AC9 ordering), then tickets rewritten to the user-story format |
 
 **Lessons**
 - Client answers live in the ticket/spec, never in chat
