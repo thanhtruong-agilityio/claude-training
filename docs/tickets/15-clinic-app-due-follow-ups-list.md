@@ -1,10 +1,10 @@
-# 10 - [FE] Show due follow-ups list on patient list page
+# 15 - [FE] Show due follow-ups list on patient list page
 
 - Spec: [follow-up dashboard](../specs/2026-10-27-follow-up-dashboard-spec.md)
-- Blocked by: 09
+- Blocked by: 14
 
 ## Context
-The doctor wants to see who needs to come back without searching. The patient list is the home page, so the list goes there. It reads the endpoint from ticket 09 and replaces the current "Follow-ups today" block.
+The doctor wants to see who needs to come back without searching. The patient list is the home page, so the list goes there. It reads the endpoint from ticket 14 and replaces the current "Follow-ups today" block.
 
 ## Client answers that apply
 - A simple list plus one total at the top, for example "5 patients to call". No calendar or chart (Q4).
@@ -23,7 +23,7 @@ In:
 - Add `getDueFollowUps(asOf?)` to `api.ts` and the matching types to `types.ts`.
 
 Out:
-- Empty, loading and error states (ticket 11).
+- Empty, loading and error states (ticket 16).
 - Actions on a row (mark contacted, new visit), filters, upcoming follow-ups, export.
 - Removing the old `listFollowUps` API function or the old endpoint.
 
@@ -42,11 +42,11 @@ Out:
 - Files: `frontend/src/pages/PatientListPage.tsx`, `frontend/src/components/FollowUps.tsx` (rework or replace), `frontend/src/api.ts`, `frontend/src/types.ts`.
 - Reuse the existing `onOpen(patientId)` pattern from `FollowUps`.
 - Update `frontend/src/__tests__/FollowUps.test.tsx` and `PatientListPage.test.tsx` to the new behavior. Tests first, fake data only. Run with `make test-frontend`.
-- TypeScript strict: no `any`. Keep `types.ts` in step with the backend models from ticket 09.
+- TypeScript strict: no `any`. Keep `types.ts` in step with the backend models from ticket 14.
 
 ## Dependencies
-- Blocked by: 09.
-- Blocks: 11.
+- Blocked by: 14.
+- Blocks: 16.
 
 ## Estimate
 M

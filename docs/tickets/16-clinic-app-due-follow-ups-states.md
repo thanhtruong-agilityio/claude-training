@@ -1,10 +1,10 @@
-# 11 - [FE] Add empty, loading, error states to due follow-ups list
+# 16 - [FE] Add empty, loading, error states to due follow-ups list
 
 - Spec: [follow-up dashboard](../specs/2026-10-27-follow-up-dashboard-spec.md)
-- Blocked by: 10
+- Blocked by: 15
 
 ## Context
-The list from ticket 10 only covers the happy path. The current block hides itself when empty, which a doctor can read as "the screen is broken". This ticket makes every state explicit.
+The list from ticket 15 only covers the happy path. The current block hides itself when empty, which a doctor can read as "the screen is broken". This ticket makes every state explicit.
 
 ## Client answers that apply
 - The client did not specify these states. The wording below is a BA decision, kept minimal.
@@ -29,11 +29,11 @@ Out:
 - [ ] AC6 The error message does not include patient data or the raw response body.
 
 ## Technical Notes
-- Files: the component from ticket 10 and its test file in `frontend/src/__tests__/`. No `any`. Fake data only.
+- Files: the component from ticket 15 and its test file in `frontend/src/__tests__/`. No `any`. Fake data only.
 - Do not log request or response bodies (they can contain patient data).
 
 ## Dependencies
-- Blocked by: 10.
+- Blocked by: 15.
 - Blocks: none.
 
 ## Assumptions

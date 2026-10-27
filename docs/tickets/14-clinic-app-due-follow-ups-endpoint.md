@@ -1,7 +1,7 @@
-# 09 - [BE] Add due follow-ups report endpoint
+# 14 - [BE] Add due follow-ups report endpoint
 
 - Spec: [follow-up dashboard](../specs/2026-10-27-follow-up-dashboard-spec.md)
-- Blocks: 10
+- Blocks: 15
 
 ## Context
 The doctor wants to know which patients need to come back. Today `GET /visits/follow-ups` only matches one exact date, so a missed follow-up disappears the next day. The dashboard needs a list of patients whose follow-up is due today or overdue.
@@ -62,7 +62,7 @@ Out:
 
 ## Dependencies
 - Blocked by: none.
-- Blocks: 10.
+- Blocks: 15.
 
 ## Assumptions
 - [ASSUMPTION] A visit on the same day as the follow-up date counts as the patient having come back (the client said "after"; same day was not decided).
