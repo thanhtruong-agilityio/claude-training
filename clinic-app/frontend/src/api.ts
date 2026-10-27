@@ -1,4 +1,4 @@
-import type { FollowUp, Patient, PatientDetail, Revenue, Visit, VisitPayload } from "./types";
+import type { DueFollowUps, FollowUp, Patient, PatientDetail, Revenue, Visit, VisitPayload } from "./types";
 
 const BASE = "/api";
 
@@ -46,6 +46,9 @@ export const deleteVisit = (id: number) =>
 
 export const listFollowUps = (date?: string) =>
   request<FollowUp[]>(`${BASE}/visits/follow-ups${date ? `?date=${date}` : ""}`);
+
+export const getDueFollowUps = (asOf?: string) =>
+  request<DueFollowUps>(`${BASE}/reports/follow-ups${asOf ? `?as_of=${asOf}` : ""}`);
 
 export const getRevenue = (from: string, to: string) =>
   request<Revenue>(`${BASE}/reports/revenue?from=${from}&to=${to}`);
