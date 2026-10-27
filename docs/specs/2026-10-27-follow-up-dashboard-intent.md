@@ -10,7 +10,7 @@
 
 Original brief, verbatim:
 
-> "Bác sĩ muốn biết ai cần quay lại khám, kiểu như dashboard, càng sớm càng tốt."
+> "The doctor wants to know who needs to come back for a visit, something like a dashboard, as soon as possible."
 
 The doctor currently has no quick way to see which patients should come back for a visit.
 
