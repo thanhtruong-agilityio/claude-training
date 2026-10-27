@@ -1,35 +1,57 @@
 import { useEffect, useState } from "react";
-import { listFollowUps } from "../api";
-import type { FollowUp } from "../types";
+import { getDueFollowUps } from "../api";
+import type { DueFollowUps } from "../types";
+
+function overdueLabel(days: number): string {
+  if (days === 0) return "Today";
+  if (days === 1) return "1 day overdue";
+  return `${days} days overdue`;
+}
 
 export default function FollowUps({ onOpen }: { onOpen: (patientId: number) => void }) {
-  const [rows, setRows] = useState<FollowUp[]>([]);
+  const [data, setData] = useState<DueFollowUps | null>(null);
 
   useEffect(() => {
-    listFollowUps().then(setRows);
+    getDueFollowUps().then(setData);
   }, []);
 
-  if (rows.length === 0) return null;
+  if (!data || data.total === 0) return null;
 
   return (
     <section>
-      <h2>Follow-ups today</h2>
-      <ul>
-        {rows.map((r) => (
-          <li key={r.visit_id}>
-            <a
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                onOpen(r.patient_id);
-              }}
-            >
-              {r.full_name}
-            </a>{" "}
-            {r.phone ?? ""}
-          </li>
-        ))}
-      </ul>
+      <h2>{data.total === 1 ? "1 patient to call" : `${data.total} patients to call`}</h2>
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Follow-up date</th>
+              <th>Overdue</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.items.map((r) => (
+              <tr key={r.patient_id}>
+                <td className="wrap-anywhere">
+                  <a
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onOpen(r.patient_id);
+                    }}
+                  >
+                    {r.full_name}
+                  </a>
+                </td>
+                <td>{r.phone ?? ""}</td>
+                <td>{r.follow_up_date}</td>
+                <td>{overdueLabel(r.days_overdue)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </section>
   );
 }
