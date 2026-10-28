@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: clinic-app
+    steps:
+      - uses: actions/checkout@v4
+      - name: Backend tests
+        run: make test-backend
+      - name: Frontend tests
+        if: ${{ !cancelled() }}
+        run: make test-frontend
