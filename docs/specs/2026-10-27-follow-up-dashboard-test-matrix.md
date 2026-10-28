@@ -43,6 +43,8 @@
 | T14-31 | AC15 | Old endpoint unchanged | `GET /visits/follow-ups?date=2026-10-27` | Same behavior as before this change | E |
 | T14-32 | AC14 | Response shape | Any non-empty result | Item has exactly `patient_id`, `full_name`, `phone`, `follow_up_date`, `days_overdue`; `total` equals item count | H |
 | T14-33 | AC16 | Visit without follow-up date | Visit with `follow_up_date` null | Ignored | H |
+| T14-34 | AC12 | Compact date, added after review | `as_of=20261027` (the parser accepts it, the format rule must not) | 422 | X |
+| T14-35 | AC12 | ISO week date, added after review | `as_of=2026-W44-2` (same) | 422 | X |
 
 ## Ticket 15 - [FE] due follow-ups list on patient list page
 
@@ -75,6 +77,7 @@
 | T16-04 | AC2b | Empty has no rows or heading | Same as T16-03 | No rows, no "patients to call" heading | E |
 | T16-05 | AC3a | Server error | API returns 500 | "Could not load follow-ups" and "Try again" | X |
 | T16-06 | AC3b | Client error | API returns 422 | Same message and button | X |
+| T16-06b | AC3b | Client error through the real `api.ts`, added after review | `fetch` answers 422 with a body containing a patient name | Same message and button; the name is not on the page | X |
 | T16-07 | AC3c | Network failure | Request rejects | Same message and button | X |
 | T16-08 | AC4a | Retry succeeds with items | Click "Try again"; API returns 2 items | List with 2 rows, error text gone | H |
 | T16-09 | AC4b | Retry succeeds, empty | Click "Try again"; API returns `total` 0 | "No patients to call" | H |
@@ -83,6 +86,12 @@
 | T16-12 | AC5 | Page works in error state | In error state, type in search box, open add-patient form | Both work | H |
 | T16-13 | AC6 | No data in error text | API 500 with a body containing a patient name | Only "Could not load follow-ups"; the name is not on the page | X |
 | T16-14 | AC7 | No data in logs | Same as T16-13 | Nothing from the response body in the console or logs | X |
+
+## Rows added after review
+
+Three rows were added after the `@claude` reviews of PRs #42 and #45, each closing a gap the review found: T14-34, T14-35 (the format check in BR7 was never reached by the old invalid values) and T16-06b (422 was only tested with a mocked `api`). The matrix went from 63 rows to 66: ticket 14 has 35, ticket 15 has 16, ticket 16 has 15.
+
+Existing tests strengthened, no new row: T14-15 now fails if the earlier follow-up wins; T15-10 now fails if rows are sorted by days or date; T15-08 now checks the name is a link; T16-14 now asserts no console call at all.
 
 ## Coverage check
 
