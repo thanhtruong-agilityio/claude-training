@@ -3,7 +3,7 @@
 - Source: [intent](../intents/2026-10-27-follow-up-dashboard.md)
 - Author: ThanhTruong (playing the BA)
 - Date: 2026-10-27
-- Status: client answered (section 5); next is the ticket pack
+- Status: built (tickets 14, 15, 16 merged); decisions from the build are in section 7, open questions still waiting for an owner are in section 8
 
 ## 1. Intent in one line
 
@@ -88,9 +88,29 @@ Answers are from the client. "Assumption" marks a question the client did not de
 - Every behavior change ships with a test; `make test` runs it.
 - Test data is fake only.
 
-## 7. Next steps
+## 7. Decisions made during the build
+
+| # | Decision | Where it lives | Made by |
+|---|---|---|---|
+| D1 | Patient names are ordered by plain text comparison (database default): case-sensitive, accents not folded. | Ticket 14 BR5, AC9b, AC9c | BA, during test planning |
+| D2 | `as_of` accepts only `YYYY-MM-DD`. Compact (`20261027`) and ISO week (`2026-W44-2`) forms are rejected with 422 even though the parser would accept them. | Ticket 14 BR7, AC12 | BA, after the review of PR #42 |
+| D3 | The follow-up date is shown as `YYYY-MM-DD`. | Ticket 15 BR3 | BA (working default) |
+| D4 | The list has three states with fixed texts: "Loading follow-ups...", "No patients to call", "Could not load follow-ups" with "Try again". Every failure (4xx, 5xx, network) looks the same and nothing from the response is shown or logged. | Ticket 16 BR1 to BR4, AC6, AC7 | BA (working default) |
+| D5 | A visit on the follow-up date itself counts as the patient coming back. | Ticket 14 OQ1, AC5c | BA (working default) |
+
+## 8. Open questions still waiting for an answer
+
+| # | Ticket | Question | Owner | Working default until answered |
+|---|---|---|---|---|
+| OQ1 | 14 | Does a patient who comes back on the follow-up date itself count as having come back? The client said "after". | Client | Yes (AC5c) |
+| OQ2 | 14 | When `as_of` is a past date, should a visit after `as_of` still count as the patient having come back? BR3 has no upper bound, so today it does. Matters only if the endpoint is used to ask what was due on a given day. | BA, then client | Yes (BR3 as written) |
+| OQ1 | 15 | Which date format does the doctor want to read in the list? | Client | `YYYY-MM-DD` |
+| OQ1 | 16 | Is the wording of the four messages acceptable? | Client | The texts in D4 |
+
+## 9. Next steps
 
 1. Client answered section 5 (done).
-2. BA splits the spec into a ticket pack (one ticket per PR), each with acceptance criteria and the client's answers.
-3. QA drafts the test matrix from the acceptance criteria.
-4. Dev produces a plan for the first ticket without asking questions outside the ticket.
+2. BA splits the spec into a ticket pack (done: tickets 14 to 16).
+3. QA drafts the test matrix from the acceptance criteria (done).
+4. Build tickets 14 to 16 (done, PRs #42, #43, #45).
+5. Get answers to section 8 and update the tickets if a working default changes.
