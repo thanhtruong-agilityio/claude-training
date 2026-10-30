@@ -4,7 +4,7 @@
 - **Trainee:** thanh.truong
 - **Branch:** `training/day-15`
 
-**Status:** In progress. Course notes for "Building Effective Human Agent Teams" lessons 1, 2 and 4 are in; "Building with the Claude API" lessons Accessing the API, Getting an API key, Multi-turn conversations, System prompts, Temperature, Response streaming, Structured data, Prompt evaluation, A typical eval workflow, Generating test datasets, Running the eval and Model-based grading noted; capstone items below are not ticked until done.
+**Status:** In progress. Course notes for "Building Effective Human Agent Teams" lessons 1, 2 and 4 are in; "Building with the Claude API" lessons Accessing the API, Getting an API key, Multi-turn conversations, System prompts, Temperature, Response streaming, Structured data, Prompt evaluation, A typical eval workflow, Generating test datasets, Running the eval, Model-based grading, Code-based grading, Prompt engineering, Being clear and direct, Being specific, Structure with XML tags and Tool use (intro, functions, schemas) and Handling message blocks noted; capstone items below are not ticked until done.
 
 ---
 
@@ -138,6 +138,62 @@
 - Ask for strengths, weaknesses and reasoning with the score, otherwise scores cluster around 6
 - Test runner records output, test case, score, reasoning; a separate function averages scores into one metric per prompt version. Model graders can be somewhat inconsistent but give a stable enough baseline
 
+**Code-based grading**
+- Code graders cover format (only the requested code type, no explanation) and valid syntax; the model grader keeps task following
+- Validators on stripped text: `validate_json` (`json.loads`), `validate_python` (`ast.parse`), `validate_regex` (`re.compile`); 10 on success, 0 on error
+- Each test case gets a `format` field (e.g. python) so the grader picks the validator; add it to the dataset generation prompt example
+- Prompt: respond only with Python, JSON or a plain regex, no comments or explanation; optional assistant prefill with a code block opener
+- Final score = average of model score and syntax score (weights adjustable). Baseline value matters less than whether prompt changes raise it
+
+**Prompt engineering**
+- Iterative loop: set a goal, write a simple prompt, evaluate, apply specific techniques, re-evaluate; repeat the last two until satisfied; each iteration should show measurable score gains
+- Example: a one-day meal plan prompt for athletes (height, weight, goal, dietary restrictions)
+- `PromptEvaluator`: `generate_dataset` (task description + input spec; 2-3 cases in development, more for final validation), `run_evaluation` (prompt function + dataset file, `extra_criteria`); `max_concurrent_tasks` start low (~3) to avoid rate limits
+- Baseline prompt is deliberately naive; first scores are low (about 2.3/10 cited); report = numeric score + HTML with grader reasoning
+- Change one thing at a time, evaluate, build on what works. Coming: clear and direct, specific, XML tags, examples
+
+**Being clear and direct**
+- The first line matters most: clear = plain language, say exactly what you want; direct = an instruction, not a question, starting with an action verb (write, create, generate)
+- Guidelines: lead with the action, name the specific output, add key constraints (scope, audience, requirements), avoid vague or hedged wording
+- Example: "what should an athlete eat" -> generate a one-day meal plan for an athlete meeting dietary restrictions; changing only the first line moved the score 2.32 -> 3.92
+
+**Being specific**
+- A vague request ("short story about someone who discovers a hidden talent") leaves length, cast and plot to Claude; specific guidelines narrow the range
+- Two types: output quality guidelines (length, structure/format, required elements, tone/style) and process steps (how to work through it: brainstorm, select, outline, consider supporting elements)
+- Use output guidelines in nearly every prompt; add process steps for complex work (troubleshooting, decisions, critical thinking, analysis, e.g. sales decline: several causes, not one); combine both for controlled output and thorough reasoning
+- Meal-plan test: guidelines (calories, macros, meal timing, restrictions, portions in grams, budget) moved the score 3.92 -> 7.86
+
+**Structure with XML tags**
+- Big prompts can blur which text is instructions and which is data; tags (paired open/close labels) set boundaries so Claude sees what belongs together
+- Helps: separate instructions from large data (sales records), keep content types apart (code vs docs in debugging), group related details (`<athlete_information>`)
+- Names: no official schema needed; descriptive and specific (`<sales_records>` over `<data>`)
+- Use for large context, mixed content, multiple variables (interpolation), clearer boundaries; benefit grows with prompt size, little difference in simple prompts
+- No eval results in this lesson
+
+**Introducing tool use**
+- Claude only knows its training data; tools give a structured way to request fresh data (e.g. weather)
+- Four steps: app sends question plus instructions for getting external data; Claude specifies exactly what it needs; your server fetches it (API or database); you send results back and Claude answers with both
+- Benefits: real-time info, integrations with databases and APIs, latest data, predictable structured requests. Claude alone vs Claude plus your server (which does the retrieval). No code in this lesson
+
+**Tool functions**
+- A tool is a plain Python function Claude calls when it needs info or an action (preview: current date/time, add a duration, set reminders)
+- Practices: descriptive names (function and parameters), validate inputs and raise errors for empty/invalid values, clear error messages (Claude can read them and retry with corrected parameters)
+- Example `get_current_datetime(date_format="%Y-%m-%d %H:%M:%S")`: raises `ValueError` if the format is empty, returns `datetime.now().strftime(date_format)`
+- The function is only part one: still need a JSON schema and integration into the chat system
+
+**Tool schemas**
+- JSON Schema = general-purpose validation spec, adopted for describing function parameters; Claude reads it as documentation
+- Tool specification = `name` (clear, verb-noun), `description` (3-4 sentences: what it does, when to call, what data returns, each argument), `input_schema` (JSON Schema of the arguments)
+- Generate with Claude: paste the function code, ask for a tool-calling schema, attach Anthropic's tool-use docs, review
+- In code: schema dict next to the function with a suffix on the function name; defaulted args go in `properties` with `default` and are not required; validation errors still raised in the function body; optional `ToolParam` type wrapper for type checking
+
+**Handling message blocks**
+- With tools, a reply can hold several content blocks instead of one text block: a text block (Claude explains what it does) and a `tool_use` block (ID to track the call, function name, input as a dict)
+- Enable tools by passing a list of tool schemas as `tools` in `messages.create`
+- Append the assistant turn with role `assistant` and the full `response.content`, not just the text; Claude stores no history, you manage the list
+- Five steps: send request with tools, receive multi-block reply, run the tool, send the result back with full history, receive the final answer
+- Helpers that assume a single text block need updating. The page does not cover `stop_reason`
+
 **Personal playbook**
 - One page, three parts: favorite workflows, prompts, guardrails
 - Built from the dojo plan and my Learning notes (tabs), not from memory
@@ -147,6 +203,15 @@
 ## 5. Sources
 
 - Organizational checklist, Building Effective Human Agent Teams, Claude Academy: https://academy.claude.com/courses/building-effective-human-agent-teams/organizational-checklist
+- Handling message blocks, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/handling-message-blocks
+- Tool schemas, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/tool-schemas
+- Tool functions, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/tool-functions
+- Introducing tool use, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/introducing-tool-use
+- Structure with XML tags, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/structure-with-xml-tags
+- Being specific, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/being-specific
+- Being clear and direct, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/being-clear-and-direct
+- Prompt engineering, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/prompt-engineering
+- Code-based grading, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/code-based-grading
 - Model-based grading, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/model-based-grading
 - Running the eval, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/running-the-eval
 - Generating test datasets, Building with the Claude API, Claude Academy: https://academy.claude.com/courses/building-with-the-claude-api/generating-test-datasets
