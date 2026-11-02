@@ -11,9 +11,10 @@ if [ "$(cfg tracker github)" != "github" ]; then
   exit 0
 fi
 
-# Creating the ticket always runs; the status label is a status write, so it follows ticket_updates.
+# Creating the ticket always runs. The Backlog label is applied unless the project opted out with ticket_updates: no-update.
 label=""
-[ "$(cfg ticket_updates unset)" = "update" ] && label=$(cfg intent "Backlog" "  ")
+[ "$(cfg ticket_updates unset)" != "no-update" ] && label=$(cfg intent "Backlog" "  ")
+[ -n "$label" ] && gh label create "$label" --color BFD4F2 >/dev/null 2>&1 || true
 
 links=""
 while IFS= read -r path; do
@@ -28,12 +29,14 @@ while IFS= read -r path; do
     continue
   fi
 
-  args=(--title "$title" --body "Intent: $path")
+  # First line stays "Intent: <path>" (the duplicate check searches for it); the file content follows.
+  body="Intent: $path"$'\n\n'"$(cat "$path")"
+  args=(--title "$title" --body "$body")
   [ -n "$label" ] && args+=(--label "$label")
   if ! url=$(gh issue create "${args[@]}"); then
     # The status label may not exist yet; create the ticket without it rather than lose it.
     echo "::warning::could not apply label '$label'; creating the ticket without it"
-    url=$(gh issue create --title "$title" --body "Intent: $path")
+    url=$(gh issue create --title "$title" --body "$body")
   fi
   links+="- $path: $url"$'\n'
 done < <(gh pr view "$PR" --json files --jq '.files[].path')
