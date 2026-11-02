@@ -1,11 +1,4 @@
 {
-  "extraKnownMarketplaces": {
-    "cl": { "source": { "source": "github", "repo": "thanhtruong-agilityio/claude-config" } },
-    "claude-code-plugins": { "source": { "source": "github", "repo": "anthropics/claude-code" } }
-  },
-  "enabledPlugins": { "cl-core@cl": true, "cl-dev@cl": true, "cl-ba-qa@cl": true, "security-guidance@claude-code-plugins": true, "claude-security@claude-plugins-official": true },
-  "model": "claude-sonnet-5-5",
-  "advisorModel": "opus",
   "permissions": {
     "allow": [
       "Bash(git status:*)",
@@ -23,13 +16,29 @@
       "Read(**/.env)"
     ]
   },
+  "model": "claude-sonnet-5-5",
   "hooks": {
     "Stop": [
       {
         "hooks": [
-          { "type": "command", "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notify-on-finish.sh" }
+          {
+            "type": "command",
+            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/notify-on-finish.sh"
+          }
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "claude-security@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-code"
+      }
+    }
+  },
+  "advisorModel": "opus"
 }
