@@ -30,19 +30,9 @@
     ]
   },
   "enabledPlugins": {
-    "claude-security@claude-plugins-official": true,
-    "cl-core@cl": true,
-    "cl-dev@cl": true,
-    "cl-ba-qa@cl": true,
-    "cl-lead@cl": true
+    "claude-security@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
-    "cl": {
-      "source": {
-        "source": "github",
-        "repo": "thanhtruong-agilityio/claude-config"
-      }
-    },
     "claude-code-plugins": {
       "source": {
         "source": "github",
