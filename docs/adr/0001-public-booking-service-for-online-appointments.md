@@ -1,7 +1,7 @@
 # 0001. Public booking service for online appointments
 
 Date: 2026-11-03
-Status: Proposed
+Status: Accepted (2026-11-03, ThanhTruong as product owner). Scope note: ticket 59 does not build this service; sync, hosting, auth and rate limiting are deferred to a later ticket, and the booking feature first ships inside the clinic app on `127.0.0.1`.
 
 ## Context
 
