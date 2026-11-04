@@ -1,0 +1,18 @@
+{
+  "ran_at": "2026-11-02T14:41:07+07:00",
+  "open_issues": {
+    "59": "Backlog",
+    "58": "Backlog",
+    "56": "Backlog",
+    "39": "", "38": "", "37": "", "14": "", "13": "", "12": "", "11": "", "10": "bug", "9": "bug", "7": "", "6": "", "5": "", "4": "bug", "3": "bug"
+  },
+  "open_prs": {
+    "51": "tmp/ci-red-both 4644ed58",
+    "50": "tmp/ci-red-frontend 8d55c25a",
+    "49": "tmp/ci-red-backend edaeb808",
+    "32": "test/seeded-bugs-clinic 613709dd"
+  },
+  "blocked": [],
+  "spec_review": [],
+  "quarantine": []
+}
