@@ -1,0 +1,32 @@
+{
+  "approved_auto": false,
+  "base": "main",
+  "branch": "feat/59",
+  "deployed_sha": null,
+  "history": [
+    {
+      "at": "2026-11-03T11:35:52Z",
+      "stage": "pick"
+    },
+    {
+      "at": "2026-11-03T11:35:52Z",
+      "stage": "explore"
+    }
+  ],
+  "key": "59",
+  "main_sha": "94d096b31c94806dd9c397a17014b5349201214d",
+  "metrics": {},
+  "mode": null,
+  "plan_approved": false,
+  "plan_hash": null,
+  "spec_commit": "31b74c3d5bcecef80c95f0e606b6695d679e5800",
+  "spec_paths": [
+    "docs/specs/2026-11-02-online-appointment-booking-design.md"
+  ],
+  "stage": "explore",
+  "tier": "L",
+  "verifier": {
+    "result": null,
+    "round": 0
+  }
+}
